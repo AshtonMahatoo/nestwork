@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Welcome to NestWork</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Roboto+Slab:wght@600;700&display=swap">
+<style>
+/* Layout: a navy honeycomb band holds the pitch and the scan card side by side; below it, three hub jobs, then the demo personas. Same identity as the NestWork app. */
+:root{
+  --bg:#F1F2EE; --surface:#FFFFFF; --line:#D6DBD4; --ink:#0B1F33; --ink2:#2C3E50; --meta:#54585A;
+  --navy:#003057; --gold:#B3A369; --buzz:#EAAA00; --on-navy:#FFFFFF; --on-navy-2:#DCE4EC; --gold-ink:#6B5D24; --gold-tint:#F3EEDC;
+  --btn:#EAAA00; --btn-ink:#003057; --link:#003057; --hexbg:#003057;
+  --display:'Roboto Slab',Rockwell,Georgia,serif;
+  --sans:'Source Sans 3',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --hex:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);
+  --comb:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49' viewBox='0 0 28 49'%3E%3Cpath fill='%23B3A369' fill-opacity='.2' d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.98-7.5V0h-2v6.35L0 12.69v2.3zm0 18.5L12.98 41v8h-2v-6.85L0 35.81v-2.3zM15 0v7.5L27.99 15H28v-2.31h-.01L17 6.35V0h-2zm0 49v-8l12.99-7.5H28v2.31h-.01L17 42.15V49h-2z'/%3E%3C/svg%3E");
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#071626; --surface:#0F2438; --line:#27405A; --ink:#EEF1F4; --ink2:#CBD3DB; --meta:#A9B4BE;
+  --navy:#00223F; --gold-ink:#D8C98A; --gold-tint:#353016; --btn-ink:#00223F; --link:#D8C98A; --hexbg:#24507A; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#071626; --surface:#0F2438; --line:#27405A; --ink:#EEF1F4; --ink2:#CBD3DB; --meta:#A9B4BE;
+  --navy:#00223F; --gold-ink:#D8C98A; --gold-tint:#353016; --btn-ink:#00223F; --link:#D8C98A; --hexbg:#24507A; color-scheme:dark }
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.5}
+h1,h2,h3,p{margin:0}
+h1,h2,h3{font-family:var(--display);text-wrap:balance}
+a{color:var(--link)}
+:focus-visible{outline:3px solid var(--buzz);outline-offset:3px}
+.in{max-width:1100px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+.band{background-color:var(--navy);background-image:var(--comb);background-size:28px 49px;color:var(--on-navy);border-bottom:5px solid var(--buzz)}
+.band .in{padding-block:28px 44px;display:flex;flex-direction:column;gap:32px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand i{width:36px;height:40px;clip-path:var(--hex);background:var(--buzz);display:flex;align-items:center;justify-content:center;flex:none}
+.brand b{font-family:var(--display);font-size:22px;display:block;line-height:1.1}
+.brand small{font-style:italic;font-weight:600;font-size:13px;color:#D8C98A}
+.tag{margin-left:auto;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#003057;background:var(--gold);padding:3px 9px;border-radius:4px}
+.hero{display:flex;flex-wrap:wrap;gap:36px;align-items:center}
+.pitch{flex:1 1 380px;min-width:0;display:flex;flex-direction:column;gap:16px}
+.eyebrow{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--buzz)}
+.pitch h1{font-size:clamp(32px,5vw,50px);line-height:1.1;color:var(--on-navy)}
+.pitch p{color:var(--on-navy-2);max-width:56ch;font-size:19px}
+.who{display:flex;flex-wrap:wrap;gap:8px}
+.who span{border:1px solid rgba(179,163,105,.6);border-radius:16px;padding:3px 12px;font-size:15px;font-weight:600;color:var(--on-navy)}
+
+.scan{flex:0 1 340px;min-width:0;background:#FFFFFF;color:#0B1F33;border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:14px;align-items:center;text-align:center;box-shadow:0 18px 40px rgba(0,0,0,.28)}
+.scan h2{font-size:21px;color:#003057}
+.qr-box{width:100%;max-width:240px;aspect-ratio:1}.qr-box svg{width:100%;height:auto;display:block}
+.open{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;width:100%;padding:0 20px;border-radius:24px;background:#EAAA00;color:#003057;font-weight:700;font-size:18px;text-decoration:none}
+.open:hover{background:#F5C02E}
+.copy{display:flex;gap:6px;width:100%;align-items:stretch}
+.copy input{flex:1;min-width:0;border:1px solid #C9CFC8;border-radius:8px;padding:8px 10px;font:inherit;font-size:14px;color:#2C3E50;background:#F7F8F5}
+.copy button{border:1px solid #003057;background:#FFFFFF;color:#003057;border-radius:8px;padding:0 12px;font:inherit;font-weight:700;font-size:14px;cursor:pointer;min-height:40px}
+.scan .note{font-size:13px;color:#54585A}
+
+main .in{padding-block:40px 24px;display:flex;flex-direction:column;gap:40px}
+.sec{display:flex;flex-direction:column;gap:16px}
+.sec>h2{font-size:26px}
+.sec>p{color:var(--ink2);max-width:62ch}
+.jobs{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.job{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.job .hx{width:34px;height:38px;clip-path:var(--hex);background:var(--hexbg);display:flex;align-items:center;justify-content:center;flex:none}
+.job h3{font-size:19px}
+.job p{color:var(--ink2);font-size:16px}
+.job ul{margin:0;padding-left:18px;color:var(--ink2);font-size:15px;display:flex;flex-direction:column;gap:2px}
+
+.personas{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.persona{border-top:4px solid var(--buzz);background:var(--surface);border-radius:0 0 12px 12px;border-left:1px solid var(--line);border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:16px 18px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.persona b{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-ink)}
+.persona strong{font-family:var(--display);font-size:19px}
+.persona span{color:var(--ink2);font-size:15px}
+.steps{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:6px;color:var(--ink2);max-width:66ch}
+.steps strong{color:var(--ink)}
+footer .in{padding-block:8px 36px;font-size:14px;color:var(--meta);border-top:1px solid var(--line);padding-top:18px}
+@media (prefers-reduced-motion:no-preference){.open{transition:background .15s}}
+</style>
+</head>
+<body>
+
+
+<header class="band">
+  <div class="in">
+    <div class="brand">
+      <i><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#003057" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 17l5-5 4 4 7-9"></path></svg></i>
+      <span><b>NestWork</b><small>Jackets solving it together.</small></span>
+      <span class="tag">Prototype</span>
+    </div>
+    <div class="hero">
+      <div class="pitch">
+        <span class="eyebrow">Georgia Tech's campus hub</span>
+        <h1>One closed hub for all of Georgia Tech.</h1>
+        <p>Every department, student, faculty member and staff member in a single place to share resources, get alerts and get campus work done.</p>
+        <div class="who" aria-label="Who it is for"><span>Students</span><span>Faculty</span><span>Staff</span><span>Every department</span></div>
+      </div>
+      <div class="scan">
+        <h2>Scan to open NestWork</h2>
+        <div id="qr" class="qr-box" role="img" aria-label="QR code that opens NestWork"></div>
+        <a class="open" href="app.html">Open NestWork</a>
+        <div class="copy">
+          <label for="link" class="sr" style="position:absolute;left:-9999px">NestWork link</label>
+          <input id="link" type="text" readonly value="">
+          <button id="copy" type="button">Copy</button>
+        </div>
+        <span class="note">Works on any phone camera. No app needed.</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="in">
+    <section class="sec" aria-labelledby="jobs-h">
+      <h2 id="jobs-h">What the hub does</h2>
+      <div class="jobs">
+        <article class="job">
+          <span class="hx"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EAAA00" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h11l5 5v9H4z"></path><path d="M15 5v5h5"></path></svg></span>
+          <h3>Share resources</h3>
+          <p>Answers that worked, templates and the people who know.</p>
+          <ul><li>Search across every department</li><li>Confirmed solutions stay findable</li><li>Word, Teams, SharePoint and more on each profile</li></ul>
+        </article>
+        <article class="job">
+          <span class="hx"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EAAA00" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0112 0v5l2 2H4z"></path><path d="M10 21h4"></path></svg></span>
+          <h3>Get alerts</h3>
+          <p>Email when something needs you, on the schedule you choose.</p>
+          <ul><li>Replies, tags and connection requests</li><li>Instant, daily or weekly</li><li>Campus announcements planned next</li></ul>
+        </article>
+        <article class="job">
+          <span class="hx"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EAAA00" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12l5 5L20 6"></path></svg></span>
+          <h3>Run campus functions</h3>
+          <p>Requests reach the office that owns them, and recurring problems get fixed at the source.</p>
+          <ul><li>Posts reviewed before they go live</li><li>Routed to the right office</li><li>Recurring issues elevated for review</li></ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="sec" aria-labelledby="demo-h">
+      <h2 id="demo-h">Try the demo from three seats</h2>
+      <p>Use the <strong>Demo as</strong> bar at the top of NestWork to switch who is signed in.</p>
+      <div class="personas">
+        <div class="persona"><b>Student</b><strong>George P. Burdell</strong><span>Find help and resources across campus.</span></div>
+        <div class="persona"><b>Professor</b><strong>Dr. Charles Xavier</strong><span>Tenured faculty sharing expertise, courses and tools.</span></div>
+        <div class="persona"><b>Financial Aid Director</b><strong>Renee Holloway</strong><span>A department that receives requests and alerts.</span></div>
+      </div>
+      <ol class="steps">
+        <li><strong>Search</strong> "scholarships" to find the Financial Aid Director.</li>
+        <li><strong>Connect</strong> with her, then switch to her tab to see the email alert arrive.</li>
+        <li>Open <strong>Tools</strong> to add Teams, SharePoint or your department's site.</li>
+      </ol>
+    </section>
+  </div>
+</main>
+
+<footer><div class="in">NestWork is a Team Fire concept prototype with sample data. It is not an official Georgia Tech website.</div></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+<script>
+(function(){
+  var appUrl=new URL('app.html',location.href).href;
+  document.getElementById('link').value=appUrl;
+  try{var q=qrcode(0,'M'); q.addData(appUrl); q.make();
+    var svg=q.createSvgTag({cellSize:4,margin:4,scalable:true}).replace('fill="black"','fill="#003057"');
+    document.getElementById('qr').innerHTML=svg;
+  }catch(e){document.getElementById('qr').outerHTML='<p style="font-size:14px">Use the button or link below to open NestWork.</p>';}
+  var b=document.getElementById('copy'), i=document.getElementById('link');
+  b.addEventListener('click',function(){
+    function done(){b.textContent='Copied';setTimeout(function(){b.textContent='Copy';},1800);}
+    function fallback(){i.focus();i.select();b.textContent='Press Ctrl+C';setTimeout(function(){b.textContent='Copy';},2200);}
+    try{navigator.clipboard.writeText(i.value).then(done,fallback);}catch(e){fallback();}
+  });
+})();
+</script>
+
+</body>
+</html>

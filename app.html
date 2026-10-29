@@ -1,0 +1,944 @@
+<!doctype html><html lang="en"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>NestWork</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&family=Roboto+Slab:wght@600;700&display=swap">
+<style>
+/* Layout: navy app bar with global search; profile rail left, feed centre, spaces and topics right. Votes sit left of each post. */
+:root{
+  --bg:#F1F2EE; --surface:#FFFFFF; --line:#D6DBD4; --ink:#0B1F33; --ink2:#2C3E50; --meta:#54585A; --field:#8A8F8B;
+  --navy:#003057; --gold:#B3A369; --bar:#003057; --bar-ink:#FFFFFF; --bar-field:#12456F;
+  --link:#003057; --btn:#EAAA00; --btn-ink:#003057; --sel:#003057; --sel-ink:#FFFFFF; --buzz:#EAAA00; --tint:#E3EAF1;
+  --display:'Roboto Slab',Rockwell,Georgia,serif;
+  --hex:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);
+  --comb:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='49' viewBox='0 0 28 49'%3E%3Cpath fill='%23B3A369' fill-opacity='.2' d='M13.99 9.25l13 7.5v15l-13 7.5L1 31.75v-15l12.99-7.5zM3 17.9v12.7l10.99 6.34 11-6.35V17.9l-11-6.34L3 17.9zM0 15l12.98-7.5V0h-2v6.35L0 12.69v2.3zm0 18.5L12.98 41v8h-2v-6.85L0 35.81v-2.3zM15 0v7.5L27.99 15H28v-2.31h-.01L17 6.35V0h-2zm0 49v-8l12.99-7.5H28v2.31h-.01L17 42.15V49h-2z'/%3E%3C/svg%3E");
+  --gold-ink:#6B5D24; --gold-tint:#F3EEDC;
+  --ok:#1E6B45; --ok-ink:#FFFFFF; --ok-tint:#E1F1E8; --mark:#F1E3A6;
+  --sans:'Source Sans 3',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#071626; --surface:#0F2438; --line:#27405A; --ink:#EEF1F4; --ink2:#CBD3DB; --meta:#A9B4BE; --field:#5F7386;
+  --bar:#00223F; --bar-ink:#FFFFFF; --bar-field:#0F3A5E;
+  --link:#D8C98A; --btn:#EAAA00; --btn-ink:#00223F; --sel:#B3A369; --sel-ink:#00223F; --tint:#17324D;
+  --gold-ink:#D8C98A; --gold-tint:#353016;
+  --ok:#6FCB9A; --ok-ink:#0B1620; --ok-tint:#173426; --mark:#5C5220; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#071626; --surface:#0F2438; --line:#27405A; --ink:#EEF1F4; --ink2:#CBD3DB; --meta:#A9B4BE; --field:#5F7386;
+  --bar:#00223F; --bar-ink:#FFFFFF; --bar-field:#0F3A5E;
+  --link:#D8C98A; --btn:#EAAA00; --btn-ink:#00223F; --sel:#B3A369; --sel-ink:#00223F; --tint:#17324D;
+  --gold-ink:#D8C98A; --gold-tint:#353016;
+  --ok:#6FCB9A; --ok-ink:#0B1620; --ok-tint:#173426; --mark:#5C5220; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.45}
+h1,h2,h3,p{margin:0}
+h1{font-size:26px;line-height:1.25;letter-spacing:-.01em;text-wrap:balance}
+h2{font-size:17px}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+mark{background:var(--mark);color:inherit;border-radius:2px;padding:0 1px}
+.num{font-weight:700;font-variant-numeric:tabular-nums}
+.meta{font-size:14px;color:var(--meta)}
+.muted{color:var(--ink2)}
+.sr{position:absolute;left:-9999px}
+.wb{overflow-wrap:anywhere}
+
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bar);color:var(--bar-ink);border-bottom:4px solid var(--gold)}
+.bar-in,.wrap{max-width:1220px;margin:0 auto;padding-inline:16px}
+.bar-in{padding-block:8px;display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px}
+.brand{display:flex;align-items:center;gap:10px;background:none;border:0;padding:0;min-height:44px;font-weight:700;font-size:19px;color:var(--bar-ink)}
+.brand i{width:30px;height:30px;border-radius:6px;background:var(--gold);display:flex;align-items:center;justify-content:center}
+.tag{font-size:12px;font-weight:700;color:#003057;background:#B3A369;padding:2px 8px;border-radius:4px}
+.gsearch{flex:1 1 260px;display:flex;align-items:center;gap:8px;background:var(--bar-field);border-radius:6px;padding:0 12px;min-height:44px}
+.gsearch input{flex:1;min-width:0;border:0;background:transparent;outline:none;color:#FFFFFF}
+.gsearch input::placeholder{color:#C9D6E2}
+.nav{display:flex;flex-wrap:wrap;gap:4px}
+.nav button{background:none;border:0;border-bottom:3px solid transparent;color:var(--bar-ink);min-height:44px;padding:0 10px;font-weight:600}
+.nav button[aria-current="page"]{border-bottom-color:var(--gold)}
+
+.btn{min-height:44px;padding:0 16px;border-radius:22px;border:1px solid var(--field);background:var(--surface);font-weight:600}
+.btn.primary{background:var(--btn);border-color:var(--btn);color:var(--btn-ink)}
+.btn.ok{background:var(--ok-tint);border-color:var(--ok);color:var(--ok)}
+.btn.on{background:var(--sel);border-color:var(--sel);color:var(--sel-ink)}
+.btn.sm{min-height:44px;padding:0 12px;font-size:15px}
+.link{background:none;border:0;padding:0;min-height:44px;color:var(--link);font-weight:600;text-align:left}
+.name{background:none;border:0;padding:0;font-weight:700;text-align:left;color:var(--ink)}
+.name:hover,.title:hover{text-decoration:underline}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.col{display:flex;flex-direction:column;gap:14px}
+
+.wrap{padding-block:20px 56px;display:flex;flex-wrap:wrap;align-items:flex-start;gap:20px}
+.rail{flex:1 1 230px;min-width:0;display:flex;flex-direction:column;gap:16px}
+main{flex:999 1 500px;min-width:0;display:flex;flex-direction:column;gap:14px}
+aside{flex:1 1 270px;min-width:0;display:flex;flex-direction:column;gap:16px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.av{border-radius:50%;background:var(--gold-tint);color:var(--gold-ink);font-weight:700;display:flex;align-items:center;justify-content:center;flex:none;border:0;padding:0}
+.av.pp{background:var(--navy);color:#B3A369}
+.av{overflow:hidden}
+.av img{width:100%;height:100%;object-fit:cover;display:block}
+.pcard .av{border:3px solid var(--surface)}
+.who{display:flex;align-items:center;gap:10px;min-width:0}
+.who>div{min-width:0}
+.pcard{padding:0;overflow:hidden}
+.pcard .band{height:54px;background:var(--navy);border-bottom:4px solid var(--gold)}
+.pcard .in{padding:0 16px 16px;display:flex;flex-direction:column;gap:8px;margin-top:-30px}
+.stat{display:flex;justify-content:space-between;gap:12px;font-size:15px}
+.seg{display:flex;border:1px solid var(--field);border-radius:22px;overflow:hidden}
+.seg button{flex:1;border:0;background:var(--surface);min-height:44px;padding:0 10px;font-weight:600;font-size:14px;color:var(--meta)}
+.seg button[aria-pressed="true"]{background:var(--sel);color:var(--sel-ink)}
+
+.post{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;display:flex;gap:12px}
+.vote{display:flex;flex-direction:column;align-items:center;gap:2px;width:50px;flex:none}
+.vote button{width:44px;height:44px;border-radius:8px;border:1px solid var(--field);background:var(--surface);display:flex;align-items:center;justify-content:center}
+.vote button svg{stroke:var(--meta)}
+.vote button[aria-pressed="true"]{background:var(--gold-tint);border-color:var(--gold-ink)}
+.vote button[aria-pressed="true"] svg{stroke:var(--gold-ink)}
+.vote .num{font-size:18px}
+.vote small{font-size:12px;color:var(--meta)}
+.body{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
+.title{background:none;border:0;padding:0;text-align:left;font-size:20px;font-weight:700;line-height:1.3;overflow-wrap:anywhere}
+.chip{font-size:13px;font-weight:700;padding:3px 9px;border-radius:4px;white-space:nowrap}
+.chip.open{color:var(--link);background:var(--tint)}
+.chip.solved{color:var(--ok);background:var(--ok-tint)}
+.chip.elev{color:var(--gold-ink);background:var(--gold-tint)}
+.chip.done{color:var(--ok-ink);background:var(--ok)}
+.chip.wait{color:var(--surface);background:var(--ink)}
+.chip.space{color:var(--ink2);background:var(--bg)}
+.topic{border:1px solid var(--line);background:var(--surface);border-radius:16px;min-height:32px;padding:0 10px;font-size:14px;font-weight:600;color:var(--link)}
+.topic:hover{background:var(--tint)}
+.acts{display:flex;flex-wrap:wrap;gap:4px;border-top:1px solid var(--line);padding-top:4px;margin-top:2px}
+.acts button{background:none;border:0;min-height:44px;padding:0 12px;font-weight:600;color:var(--meta);border-radius:6px}
+.acts button:hover{background:var(--bg);color:var(--ink)}
+
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.steps div{display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600;color:var(--meta)}
+.steps i{height:6px;border-radius:3px;background:var(--line)}
+.steps .hit{color:var(--ink)} .steps .hit i{background:var(--ok)}
+.steps .hit.now i{background:var(--gold)}
+.qa strong{color:var(--ink)} .qa{color:var(--ink2);overflow-wrap:anywhere}
+.reply{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:8px}
+.reply.best{border:2px solid var(--ok)}
+.reply p{color:var(--ink2);white-space:pre-wrap;overflow-wrap:anywhere}
+
+label.f{display:flex;flex-direction:column;gap:6px;font-weight:600}
+label.f input,label.f select,label.f textarea,.note input{font-weight:400;border:1px solid var(--field);border-radius:8px;padding:10px 12px;min-height:44px;background:var(--surface);width:100%}
+textarea{resize:vertical}
+.check{display:flex;align-items:flex-start;gap:10px;background:var(--bg);border-radius:8px;padding:12px}
+.check input{width:20px;height:20px;margin:2px 0 0;flex:none}
+.hint{background:var(--tint);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:8px}
+.hint .item{background:var(--surface);border-radius:8px;padding:8px 12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.flag{border-radius:8px;padding:10px 12px;font-size:15px}
+.flag.warn{background:var(--gold-tint);color:var(--gold-ink)} .flag.ok{background:var(--ok-tint);color:var(--ok)}
+.starter{display:flex;align-items:center;gap:10px}
+.starter button.go{flex:1;min-width:0;text-align:left;border:1px solid var(--field);background:var(--surface);border-radius:22px;min-height:44px;padding:0 16px;color:var(--meta);font-weight:600}
+
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:2px}
+.tile b{font-size:14px;color:var(--meta)} .tile .num{font-size:28px}
+.tile.lead{background:var(--navy);border-color:var(--navy);color:#FFFFFF} .tile.lead b{color:#B3A369}
+.tablebox{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow-x:auto}
+table{width:100%;min-width:680px;border-collapse:collapse;font-size:15px}
+th{text-align:left;font-size:14px;color:var(--meta);font-weight:600}
+th,td{padding:10px 14px;border-bottom:1px solid var(--line)} tr:last-child td{border-bottom:0}
+td.r,th.r{text-align:right}
+ol.plain,ul.plain{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;color:var(--ink2)}
+.result{display:flex;flex-direction:column;gap:4px;padding:12px 0;border-top:1px solid var(--line)}
+.result:first-of-type{border-top:0;padding-top:0}
+.people{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.motto{font-style:italic;font-weight:600;color:var(--gold-ink)}
+.quote{margin:0;border:2px solid var(--gold);border-radius:10px;padding:18px;background:var(--surface);display:flex;flex-direction:column;gap:8px}
+.quote blockquote{margin:0;font-size:20px;font-style:italic;line-height:1.3;text-wrap:balance}
+.quote figcaption{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--meta)}
+.foot{max-width:1220px;margin:0 auto;padding:0 16px 32px;font-size:14px;color:var(--meta)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--navy);color:#FFFFFF;border:1px solid var(--gold);padding:12px 18px;border-radius:22px;font-weight:600;max-width:calc(100% - 32px);z-index:9}
+@media (max-width:520px){ .steps{grid-template-columns:repeat(2,minmax(0,1fr))} .post{padding:12px;gap:8px} }
+
+/* Honeycomb layer: hexagons for people, votes and counts; slab headings; Buzz Gold for the one action that matters. */
+h1,h2,.title,.brand,.num{font-family:var(--display)}
+.card>h2{display:flex;align-items:center;gap:8px}
+.card>h2::before{content:"";width:10px;height:11px;background:var(--buzz);clip-path:var(--hex);flex:none}
+.card>.row>h2{display:flex;align-items:center;gap:8px}
+.card>.row>h2::before{content:"";width:10px;height:11px;background:var(--buzz);clip-path:var(--hex);flex:none}
+.bar{background-image:var(--comb);background-size:28px 49px}
+.brand i{border-radius:0;clip-path:var(--hex);width:32px;height:36px;background:var(--buzz)}
+.av{border-radius:0;clip-path:var(--hex)}
+.av:focus-visible{outline:none;box-shadow:inset 0 0 0 3px var(--buzz)}
+.av:focus-visible img{opacity:.6}
+.pcard .av{border:0}
+.pcard .band{background-image:var(--comb);background-size:28px 49px}
+.vote button{width:46px;height:50px;border:0;border-radius:0;clip-path:var(--hex);background:var(--tint)}
+.vote button svg{stroke:var(--link)}
+.vote button[aria-pressed="true"]{background:var(--buzz)}
+.vote button[aria-pressed="true"] svg{stroke:#003057}
+.vote button:focus-visible{outline:none;box-shadow:inset 0 0 0 4px var(--ink)}
+.post{transition:border-color .15s}
+.post:hover{border-color:var(--gold)}
+.hero{background-color:var(--navy);background-image:var(--comb);background-size:28px 49px;color:#FFFFFF;border-radius:10px;border-bottom:5px solid var(--buzz);padding:22px;display:flex;flex-direction:column;gap:12px}
+.hero h1{font-size:28px;color:#FFFFFF}
+.hero p{color:#DCE4EC}
+.hero .stats{display:flex;flex-wrap:wrap;gap:6px 22px;font-weight:600}
+.hero .stats b{font-family:var(--display);font-size:24px;color:#EAAA00;margin-right:6px}
+.hero .ghost{background:transparent;border-color:#B3A369;color:#FFFFFF}
+.sp{display:flex;align-items:center;gap:10px;background:none;border:0;border-radius:8px;padding:4px 6px;min-height:44px;text-align:left;font-weight:600;width:100%}
+.sp:hover{background:var(--bg)}
+.sp[aria-pressed="true"]{background:var(--tint)}
+.hexn{width:30px;height:34px;clip-path:var(--hex);background:var(--navy);color:#EAAA00;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex:none}
+.badges{display:flex;flex-wrap:wrap;gap:14px}
+.badge{display:flex;flex-direction:column;align-items:center;gap:6px;width:96px;text-align:center;font-size:13px;font-weight:700}
+.badge i{width:56px;height:62px;clip-path:var(--hex);background:var(--navy);display:flex;align-items:center;justify-content:center}
+@media (prefers-reduced-motion:reduce){.post{transition:none}}
+.brand span{display:flex;flex-direction:column;align-items:flex-start;line-height:1.1;font-size:21px}
+.brand small{font-family:var(--sans);font-size:12.5px;font-weight:600;font-style:italic;color:#D8C98A;letter-spacing:.01em}
+.hero p.lead{font-family:var(--display);font-size:19px;font-weight:600;color:#EAAA00}
+.sel{min-height:44px;border:1px solid var(--field);border-radius:8px;padding:0 10px;background:var(--surface);max-width:100%}
+.barrow{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) auto;gap:10px;align-items:center;font-size:15px}
+.barrow>:first-child{overflow-wrap:anywhere}
+.bar-t{height:10px;border-radius:5px;background:var(--bg);overflow:hidden;display:block}
+.bar-t i{display:block;height:100%;background:var(--sel);border-radius:5px}
+.tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.tool{border:1px solid var(--line);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:10px;background:var(--surface);min-width:0}
+.tool .th{display:flex;align-items:center;gap:10px;min-width:0}
+.tg{width:38px;height:42px;clip-path:var(--hex);background:var(--navy);color:#EAAA00;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex:none;font-family:var(--display)}
+a.btn{display:inline-flex;align-items:center;text-decoration:none;color:inherit}
+a.btn.primary{color:var(--btn-ink)}
+.tlinks{display:flex;flex-wrap:wrap;gap:8px}
+.tchip{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:22px;padding:4px 14px 4px 4px;min-height:44px;text-decoration:none;color:var(--ink);font-weight:600;font-size:15px;background:var(--surface);max-width:100%}
+.tchip>span:last-child{display:flex;flex-direction:column;line-height:1.2;min-width:0;overflow-wrap:anywhere}
+.tchip small{font-weight:400;font-size:13px;color:var(--meta)}
+.tchip .tg{width:30px;height:34px;font-size:12px}
+a.tchip:hover{border-color:var(--gold)}
+.demo{background:var(--surface);border-bottom:1px solid var(--line)}
+.demo-in{max-width:1220px;margin:0 auto;padding:10px 16px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.demo-l{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--meta);margin-right:4px}
+.demo button{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;min-height:44px;padding:4px 14px;border:1px solid var(--field);border-radius:10px;background:var(--surface);text-align:left;line-height:1.25}
+.demo button b{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--gold-ink)}
+.demo button span{font-weight:600;font-size:15px}
+.demo button:hover{border-color:var(--gold)}
+.demo button[aria-pressed="true"]{background:var(--sel);border-color:var(--sel);color:var(--sel-ink)}
+.demo button[aria-pressed="true"] b{color:inherit;opacity:.8}
+</style>
+
+<div id="hdr"></div>
+<div id="app"></div>
+<p class="foot">NestWork: Jackets solving it together. A Team Fire concept prototype with sample data, not an official Georgia Tech website.</p>
+<div id="toast" class="toast" role="status" hidden></div>
+
+<script>
+(function(){
+var KEY='kx-prototype-v5';
+var OFFICES=['Travel Office','Human Resources','Procurement','Research Administration','Registrar','IT Help Desk','Facilities','Finance'];
+var PHOTO='';
+var TOOLS=[
+ {k:'word',n:'Word',g:'W',c:'Documents',u:'https://www.microsoft365.com/launch/word'},
+ {k:'excel',n:'Excel',g:'X',c:'Spreadsheets',u:'https://www.microsoft365.com/launch/excel'},
+ {k:'powerpoint',n:'PowerPoint',g:'P',c:'Presentations',u:'https://www.microsoft365.com/launch/powerpoint'},
+ {k:'outlook',n:'Outlook',g:'O',c:'Email and calendar',u:'https://outlook.office.com'},
+ {k:'teams',n:'Teams',g:'T',c:'Chat and meetings',u:'https://teams.microsoft.com'},
+ {k:'sharepoint',n:'SharePoint',g:'S',c:'Team sites and files',u:'https://www.microsoft365.com/launch/sharepoint'},
+ {k:'onedrive',n:'OneDrive',g:'OD',c:'Personal files',u:'https://www.microsoft365.com/launch/onedrive'},
+ {k:'onenote',n:'OneNote',g:'N',c:'Notes',u:'https://www.microsoft365.com/launch/onenote'},
+ {k:'vscode',n:'VS Code',g:'VS',c:'Code editor',u:'https://vscode.dev'},
+ {k:'powerbi',n:'Power BI',g:'BI',c:'Dashboards and reports',u:'https://app.powerbi.com'},
+ {k:'powerautomate',n:'Power Automate',g:'PA',c:'Workflows',u:'https://make.powerautomate.com'},
+ {k:'forms',n:'Forms',g:'F',c:'Surveys and quizzes',u:'https://forms.office.com'},
+ {k:'planner',n:'Planner',g:'PL',c:'Tasks and plans',u:'https://tasks.office.com'},
+ {k:'loop',n:'Loop',g:'L',c:'Shared workspaces',u:'https://loop.cloud.microsoft'}
+];
+function toolDef(k){for(var i=0;i<TOOLS.length;i++) if(TOOLS[i].k===k) return TOOLS[i]; return null;}
+function T(k,note,u){var t=toolDef(k); return {k:k,n:t.n,u:u||t.u,note:note||''};}
+var SPACES=['Travel & Expense','Hiring & Onboarding','Purchasing','Research Admin','Student Services','IT & Access','Facilities & Space'];
+var hdr=document.getElementById('hdr'), app=document.getElementById('app'), toastEl=document.getElementById('toast'), toastT=null;
+var ui={view:'me',id:null,sort:'shared',space:'all',q:'',scope:'all',noteFor:null,edit:false,photo:undefined,del:false,toolEdit:null};
+var S=load();
+
+function seed(){
+  var h=3600e3,d=24*h,n=Date.now();
+  function r(id,by,body,worked,confirmed,ago){return {id:id,by:by,body:body,worked:worked,confirmed:!!confirmed,ts:n-ago};}
+  function p(id,space,title,by,ago,meToo,units,tags,doing,stuck,tried,replies,extra){
+    var o={id:id,space:space,title:title,by:by,ts:n-ago,meToo:meToo,units:units,tags:tags,doing:doing,stuck:stuck,tried:tried,replies:replies||[],status:'live',elevated:false,improved:false,anon:false,note:'',office:'',experts:[],routedTo:''};
+    for(var k in (extra||{})) o[k]=extra[k]; return o;
+  }
+  var D={role:'member',seq:1,as:'george',ver:2,myBy:{},my:{meToo:{},worked:{},connect:{}},
+  people:{
+    me:{"name": "George P. Burdell", "role": "Student", "title": "Undergraduate Student · Enrolled since 1927", "unit": "Georgia Institute of Technology", "headline": "Enrolled since 1927. Still not done learning.", "skills": ["course registration", "campus traditions", "orientation", "student life", "test taking", "football", "basketball"], "interests": ["graduating eventually", "student radio", "magazine publishing", "swimming and diving"], "about": "I enrolled at Georgia Tech in 1927, when Ed Smith received two enrollment forms by mistake and decided the second one should go to me. I signed up for every class he took, he did all the schoolwork twice, and every test got turned in under both of our names. By 1930 I had a bachelor's degree, and a master's followed a few years later. The Institute lists me as an alumnus, but my name has never left the active student rolls.\n\nSince then I have kept busy. I flew 12 missions over Europe on a B-17 with the 8th Air Force, got engaged to Ramona Cartwright of Agnes Scott College in 1958, and lettered in football (1928 to 1930) and basketball (1956 to 1958). When Tech computerized class registration in 1969, I ended up registered for every class at the school that quarter, over 3,000 credit hours.\n\nI also served on Mad Magazine's board of directors from 1969 to 1981, led the online poll for Time's 2001 Person of the Year, and I am still listed on the WREK staff. Every new Yellow Jacket hears about me at orientation, so if you are new here, consider this my official welcome.", "motto": "Work hard, have fun, and never take yourself too seriously. That is the Georgia Tech way.", "projects": ["Earning every undergraduate degree Georgia Tech offers", "Staying on the active student rolls since 1927", "Staff member at WREK, Georgia Tech student radio", "Welcoming new students at orientation every year", "Cheering on George P. Burdell Jr., proctor for several Tech classes"], "favs": [["Year I enrolled", "1927, thanks to Ed Smith and an extra enrollment form"], ["Biggest semester", "Every class at Tech in 1969, over 3,000 credit hours"], ["Teams I lettered on", "Football (1928 to 1930) and basketball (1956 to 1958)"], ["Something I value", "A good tradition and a better prank"]], "photo": "data:image/jpeg;base64,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"},
+    priya:{name:'Priya N.',role:'Staff',partner:true,title:'Financial Administrator',unit:'College of Engineering',skills:['reimbursement','purchasing','travel policy'],about:'I like turning a confusing process into a one-page checklist. Ask me anything about travel and purchasing.'},
+    james:{name:'James W.',role:'Staff',title:'Administrative Manager',unit:'College of Sciences',skills:['onboarding','system access','travel'],about:'Fifteen years of onboarding people has taught me that day one sets the tone. Happy to share templates.'},
+    sam:{name:'Sam O.',role:'Faculty',title:'Associate Professor',unit:'College of Computing',skills:['curriculum','room scheduling'],about:'I teach, advise, and occasionally get lost in forms. I post here from the faculty side of the desk.'},
+    dana:{name:'Dana R.',role:'Staff',title:'Program Coordinator',unit:'College of Design',skills:['events','conference travel'],about:'Events and conferences are my thing. If it involves a schedule and a budget, I have probably tried it.'},
+    marcus:{name:'Marcus T.',role:'Faculty',title:'Lab Director',unit:'College of Engineering',skills:['student hiring','research admin'],about:'I run a lab and hire a lot of students. Always looking for ways to get new people productive faster.'},
+    aisha:{name:'Aisha K.',role:'Student',title:'Student Organization Treasurer',unit:'College of Computing',skills:['student organizations','group travel'],about:'Treasurer for a student organization, learning how the Institute works one form at a time.'},
+    xavier:{"name": "Dr. Charles Xavier", "cred": "Ph.D.", "role": "Faculty", "partner": true, "title": "Tenured Professor of Mutant Biology and Sociology", "unit": "Georgia Institute of Technology", "headline": "Every gift deserves a teacher. Every student deserves a place to belong.", "skills": ["mutant biology", "sociology", "genetics", "telepathy", "mentoring", "leadership", "ethics", "strategic planning"], "interests": ["peaceful coexistence", "student support", "research tools", "conflict resolution"], "about": "I am a tenured professor at Georgia Tech, where I teach mutant biology and sociology. I also founded and run the Xavier School for Gifted Youngsters, a private school that gives young mutants from around the world a safe place to learn, grow, and understand their abilities. In both settings I teach students how their powers work, how to control them responsibly, and how to navigate the relationships between mutants and humans.\n\nMy research draws on a lifelong interest in genetics. I apply that work to build tools like Cerebro, which helps us find and reach young mutants who need support. My teaching goes beyond conventional subjects to include ethics, leadership, and strategic thinking, preparing students to protect both mutants and humanity as members of the X-Men.\n\nI see teaching and advocacy as one mission. My hope is that every student leaves my classroom with the skills, judgment, and compassion to help build a world where mutants and humans live side by side.", "motto": "Lead with understanding, teach with patience, and never stop working toward peaceful coexistence.", "projects": ["Tenured faculty, Georgia Institute of Technology", "Founder and headmaster, Xavier School for Gifted Youngsters", "Cerebro: research tool to detect and connect with mutants worldwide", "Mentoring the X-Men in ethics, leadership, and strategy", "Advocating for mutant and human coexistence"], "favs": [["Subjects I teach", "Mutant biology, sociology, genetics, and ethics"], ["Where to find me", "My office on campus, the library, or a quiet game of chess"], ["What I look for in students", "Curiosity, self-control, and compassion"], ["Something I value", "Understanding over fear"]], "photo": "data:image/jpeg;base64,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"},
+    finaid:{"name": "Renee Holloway", "cred": "M.Ed.", "role": "Staff", "title": "Director of Financial Aid", "unit": "Office of Scholarships and Financial Aid", "headline": "Helping every Yellow Jacket find a way to pay for a Georgia Tech education.", "skills": ["financial aid", "fafsa", "scholarships", "federal grants", "student loans", "work-study", "academic progress appeals", "emergency funding"], "interests": ["process improvement", "data dashboards", "student success"], "about": "I lead the team that helps students and families plan for and pay for a Georgia Tech education. That covers federal and state aid, institutional scholarships, student loans, Federal Work-Study, and emergency funding when life happens mid-semester.\n\nMost of my work happens behind the scenes: reviewing aid packages, keeping us compliant with federal rules, and partnering with the Registrar, the Bursar, and academic departments so aid arrives when students need it. I am always looking for steps in our process that confuse students, and for ways to explain them more simply.\n\nIf you are a student with a question about your aid, or a staff member who keeps hearing the same question from students, I want to hear from you.", "motto": "No student should leave Tech because of a form they did not understand.", "projects": ["Simplifying the financial aid award letter", "Aligning aid disbursement timing with the Registrar and Bursar", "Expanding emergency funding for students", "Training advisors on academic progress appeals", "FAFSA completion workshops for incoming students"], "favs": [["Busiest season", "When the FAFSA opens, and the weeks before fall tuition is due"], ["Best part of the job", "Telling a student their funding gap is covered"], ["Advice I give most", "Apply early, read every message from our office, and ask questions"], ["Something I value", "Clear answers and kindness"]]},
+    luis:{name:'Luis M.',role:'Staff',title:'Purchasing Specialist',unit:'Research Administration',skills:['purchase requests','templates'],about:'Spreadsheet builder and purchasing problem-solver. If you built a tracker, I want to see it.'}
+  },
+  posts:[
+    p('p1','Travel & Expense','Travel reimbursement returned twice for "missing documentation". What is actually required?','dana',3*d,47,9,['reimbursement','receipts','conference travel'],
+      'Get a faculty member reimbursed for a conference trip: airfare, hotel and registration.',
+      'The report came back twice with the note "missing documentation" and no detail. A colleague in another school says their approver accepts the registration confirmation email; ours asked for an itemized receipt.',
+      'Resubmitted with the confirmation email attached. Emailed the approver and have not heard back.',
+      [r('r1','priya','This usually comes back for one of three reasons. Check these before you resubmit:\n1. Registration needs an itemized receipt showing payment, not the confirmation email.\n2. The hotel folio has to show a zero balance and the traveler\'s name.\n3. Attach the conference agenda so the travel dates can be matched to the event.',31,true,2*d),
+       r('r2','james','Same thing in our school last spring. We now ask travelers for the itemized receipt before they leave, which cut our returned reports to almost none. Happy to share the pre-trip email we send.',12,false,2*d-h),
+       r('r3','sam','From the traveler side: I never knew the confirmation email was not enough. If the return note listed which item was missing, I could fix it in one pass.',19,false,d)],
+      {elevated:true}),
+    p('p2','Hiring & Onboarding','New student assistant waited three weeks for system access after the start date','marcus',7*d,33,6,['onboarding','system access','student hiring'],
+      'Bring a student assistant on board so they can start work on day one.',
+      'The hire was approved on time, but access requests had to be filed separately in three places and nobody told us about two of them.',
+      'Filed each request as we discovered it. Asked our admin whether one checklist covers all of them.',
+      [r('r4','james','We keep a one-page onboarding checklist that lists every access request with who files it and how long it takes. File all of them the day the offer is accepted, not the start date.',14,true,6*d)]),
+    p('p3','Student Services','Which office signs the course substitution form? I have been sent to four.','aisha',2*d,21,4,['forms','signatures','degree requirements'],
+      'Get a course substitution approved so it counts toward my degree.',
+      'Each office says the next one owns the signature.',
+      'Visited my advisor, the school office, the registrar and the college office.',
+      [r('r5','sam','In our school the program director signs first and the advisor second. I do not know if that holds elsewhere.',3,false,d)]),
+    p('p4','Purchasing','Our department built its own purchase request tracker. Has anyone else already solved this?','luis',5*d,18,7,['purchase requests','tracker','templates'],
+      'Track purchase requests from submission to delivery without rebuilding a spreadsheet every year.',
+      'We suspect three other units have a version of the same spreadsheet and none of us know about the others.',
+      'Built our own. Happy to share it and compare notes.',
+      [r('r6','priya','Two units have shared their trackers in this thread. I combined the columns both use into one template so new units can start from it.',9,true,4*d)]),
+    p('p5','Facilities & Space','Room reservation approvals routed to the wrong office','sam',20*d,14,5,['room reservations','routing'],
+      'Reserve a shared classroom for an evening review session.',
+      'Requests for our building went to an office that no longer manages it, then sat unanswered.',
+      'Called the old office, who forwarded it by hand each time.',
+      [r('r7','priya','The routing list was updated after this was elevated. Requests for the affected buildings now go to the current owner.',11,true,6*d)],
+      {elevated:true,improved:true}),
+    p('p6','IT & Access','Shared mailbox access disappears every time someone changes roles','james',9*d,9,3,['shared mailbox','system access','role changes'],
+      'Keep a team mailbox staffed when people move between units.',
+      'Access is removed on the role change and has to be requested again from scratch.',
+      'Re-requested each time. Takes about a week.',[]),
+    p('p7','Travel & Expense','Expense report returned with no explanation','dana',5*h,1,1,['reimbursement','expense report'],
+      'Close out a conference trip.','The report was returned with a single line and I cannot tell which receipt is the problem.','Nothing yet.',[],{status:'pending'}),
+    p('p8','Purchasing','How do other units set up a backup approver for purchase requests?','luis',3*h,1,1,['approvals','purchase requests'],
+      'Get purchase requests approved when the usual approver is out.','Requests wait a week or more because only one person can approve.','Asked informally; no one knows if a backup is allowed.',[],{status:'pending',anon:true}),
+    p('p9','Travel & Expense','How does a student organization get reimbursed for a group trip?','aisha',1*h,1,1,['reimbursement','student organizations','group travel'],
+      'Get repaid for a van rental for six students traveling to a competition.','I do not know whether to file one report or six.','Read the travel page; it only covers individual travel.',[],{status:'pending'})
+  ]};
+  function tg(i,office,ex,routed){var q=D.posts[i]; q.office=office; q.experts=ex||[]; q.routedTo=routed||'';}
+  tg(0,'Travel Office',['priya']); tg(1,'Human Resources',['james']); tg(2,'Registrar',['me']); tg(3,'Procurement',[]); tg(4,'Facilities',[],'Facilities'); tg(5,'IT Help Desk',[]); tg(8,'Travel Office',[]);
+  var I={priya:['process mapping','data dashboards'],james:['automation','mentoring'],sam:['advising tools'],dana:['budgeting','contracts'],marcus:['grant management'],aisha:['event planning','leadership'],luis:['data dashboards','automation']};
+  for(var k in I) D.people[k].interests=I[k];
+  var TL={me:[T('word'),T('teams'),T('vscode','Registered for every computing class since 1969')],
+    xavier:[T('word'),T('powerpoint','Lecture slides for Mutant Biology'),T('teams','Office hours'),T('sharepoint','Mutant Biology and Sociology course site')],
+    finaid:[T('excel'),T('powerbi','Aid disbursement dashboard'),T('outlook'),T('teams'),T('sharepoint','Financial Aid staff site'),T('forms','Emergency funding request form')],
+    priya:[T('excel'),T('powerautomate','Travel reimbursement approval flow')],james:[T('onenote'),T('planner','Onboarding checklist')],luis:[T('excel'),T('sharepoint','Purchase request tracker')]};
+  for(var k2 in TL) D.people[k2].tools=TL[k2];
+  return D;
+}
+function load(){ try{var v=JSON.parse(localStorage.getItem(KEY)); if(v&&v.posts&&v.my&&v.people){ var base=seed().people; if(v.people.me&&v.people.me.name==='Leslie McCoy'){ v.people.me=base.me; v.as='george'; } var as=v.as||'george'; v.as=as; v.myBy=v.myBy||{}; if((v.ver||0)<2){ v.people[as==='xavier'?'me':'xavier']=base.xavier; v.ver=2; } for(var k in base){ var pid=k==='me'?'george':k, slot=pid===as?'me':pid; if(!v.people[slot]) v.people[slot]=base[k]; else if(!v.people[slot].tools&&base[k].tools) v.people[slot].tools=base[k].tools; } return v; }}catch(e){} return seed(); }
+function save(){ try{localStorage.setItem(KEY,JSON.stringify(S)); return true;}catch(e){ return false; } }
+
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function ago(ts){var m=Math.max(1,Math.round((Date.now()-ts)/6e4)); if(m<60) return m+' min ago'; var h=Math.round(m/60); if(h<24) return h+(h===1?' hour ago':' hours ago'); var d=Math.round(h/24); if(d<14) return d+(d===1?' day ago':' days ago'); return Math.round(d/7)+' weeks ago';}
+function post(id){for(var i=0;i<S.posts.length;i++) if(S.posts[i].id===id) return S.posts[i]; return null;}
+function live(){return S.posts.filter(function(p){return p.status==='live';});}
+function solved(p){return p.replies.some(function(r){return r.confirmed;});}
+function meToo(p){return p.meToo+(S.my.meToo[p.id]?1:0);}
+function worked(r){return r.worked+(S.my.worked[r.id]?1:0);}
+function isPartner(){return S.role==='partner';}
+function who(id){var x=S.people[id]||{name:'Someone',role:'',title:'',unit:'',skills:[]}; return x;}
+function nm(id){return id==='me'?(S.people.me.name||'You'):who(id).name;}
+function isPP(id){return id==='me'?isPartner():!!who(id).partner;}
+function sub(id){var x=who(id), a=[]; if(x.title) a.push(x.title); if(x.unit) a.push(x.unit); if(!a.length) a.push(x.role); return a.join(' · ');}
+var PERSONAS=[{id:'george',label:'Student'},{id:'xavier',label:'Professor'},{id:'finaid',label:'Financial Aid Director'}];
+function asId(){return S.as||'george';}
+function switchTo(id){
+  var cur=asId(); if(id===cur) return go('me');
+  if(!S.people[id]) return;
+  function sw(x){return x==='me'?cur:x===id?'me':x;}
+  S.posts.forEach(function(p){p.by=sw(p.by); p.experts=(p.experts||[]).map(sw); p.replies.forEach(function(r){r.by=sw(r.by);});});
+  var mine=S.people.me; S.people.me=S.people[id]; delete S.people[id]; S.people[cur]=mine;
+  S.myBy=S.myBy||{}; S.myBy[cur]=S.my; S.my=S.myBy[id]||{meToo:{},worked:{},connect:{}}; delete S.myBy[id];
+  S.as=id; save(); go('me'); toast('Now viewing as '+nm('me'));
+}
+function demoBar(){
+  return '<div class="demo"><div class="demo-in" role="group" aria-label="Demo: view NestWork as"><span class="demo-l">Demo as</span>'
+    +PERSONAS.map(function(p){var on=asId()===p.id, n=on?nm('me'):(S.people[p.id]?nm(p.id):''); if(!n) return '';
+      return '<button type="button" data-a="as" data-v="'+p.id+'" aria-pressed="'+on+'"><b>'+esc(p.label)+'</b><span>'+esc(n)+'</span></button>';}).join('')
+    +'</div></div>';
+}
+var NOTIF=[['replies','Replies to my challenges, and my replies being confirmed'],['tagged','When I am tagged as an expert'],['status','Updates on my submissions (approved, sent back, merged)'],['connect','Connection requests'],['digest','Weekly digest of popular topics']];
+function stable(id){return id==='me'?asId():id;}
+function defEmail(name){var w=String(name||'').replace(/^(Dr|Prof|Mr|Ms|Mrs)\.?\s+/i,'').toLowerCase().replace(/[^a-z\s]/g,' ').trim().split(/\s+/).filter(Boolean); if(!w.length) return ''; return (w.length>1?w[0].charAt(0)+w[w.length-1]:w[0])+'@gatech.edu';}
+function prefs(id){var x=who(id), d={on:true,email:defEmail(x.name),freq:'instant',replies:true,tagged:true,status:true,connect:true,digest:false}, n=x.notify||{}; for(var k in n) d[k]=n[k]; return d;}
+function notify(toId,kind,subj){
+  if(!toId||toId==='me'||!S.people[toId]) return '';
+  var pr=prefs(toId); if(!pr.on||!pr[kind]||!pr.email) return '';
+  S.mail=S.mail||[]; S.mail.unshift({to:stable(toId),kind:kind,subj:subj,ts:Date.now(),freq:pr.freq}); S.mail=S.mail.slice(0,80);
+  return pr.freq==='instant'?' Email sent to '+nm(toId).replace(/\.$/,'')+'.':' Added to '+nm(toId)+'\'s '+pr.freq+' email digest.';
+}
+function freqLabel(f){return f==='daily'?'Daily digest':f==='weekly'?'Weekly digest':'As it happens';}
+function notifyCard(){
+  var pr=prefs('me'), inbox=(S.mail||[]).filter(function(m){return m.to===asId();}).slice(0,6);
+  return '<section class="card"><h2>Email notifications</h2>'
+    +'<form class="col" data-f="notify" style="gap:12px">'
+    +'<label class="check" for="nt-on"><input id="nt-on" type="checkbox"'+(pr.on?' checked':'')+'><span><strong>Email me about activity</strong> on NestWork.</span></label>'
+    +'<label class="f" for="nt-email">Email address<input id="nt-email" type="email" value="'+esc(pr.email)+'" placeholder="you@gatech.edu"></label>'
+    +'<label class="f" for="nt-freq">How often<select id="nt-freq">'+['instant','daily','weekly'].map(function(f){return '<option value="'+f+'"'+(pr.freq===f?' selected':'')+'>'+freqLabel(f)+'</option>';}).join('')+'</select></label>'
+    +'<div class="col" style="gap:6px"><span class="meta" style="font-weight:700">Send me an email when</span>'
+    +NOTIF.map(function(n){return '<label class="row" for="nt-'+n[0]+'" style="flex-wrap:nowrap;align-items:flex-start;gap:10px;font-size:15px"><input id="nt-'+n[0]+'" type="checkbox" style="width:20px;height:20px;margin:2px 0 0;flex:none"'+(pr[n[0]]?' checked':'')+'><span>'+esc(n[1])+'</span></label>';}).join('')+'</div>'
+    +'<div><button class="btn primary" type="submit">Save settings</button></div></form>'
+    +'<div class="col" style="gap:6px;border-top:1px solid var(--line);padding-top:10px"><span class="meta" style="font-weight:700">Recent emails to you</span>'
+    +(inbox.length?inbox.map(function(m){return '<div><div class="wb" style="font-weight:600;font-size:15px">'+esc(m.subj)+'</div><div class="meta">'+ago(m.ts)+(m.freq!=='instant'?' · in your '+m.freq+' digest':'')+'</div></div>';}).join(''):'<span class="muted" style="font-size:15px">Nothing yet. You will see emails here when someone replies, tags you or connects.</span>')
+    +'</div></section>';
+}
+function toolGlyph(t){var d=toolDef(t.k); return '<span class="tg" aria-hidden="true">'+esc(d?d.g:initials(t.n))+'</span>';}
+function safeUrl(u){u=String(u||'').trim(); if(!u) return ''; if(!/^[a-z]+:/i.test(u)) u='https://'+u; return /^https?:\/\/[^\s]+$/i.test(u)?u:'';}
+function hostOf(u){try{return new URL(u).host.replace(/^www\./,'');}catch(e){return '';}}
+function toolChips(x){var a=x.tools||[]; if(!a.length) return '';
+  return '<div class="tlinks">'+a.map(function(t){var u=safeUrl(t.u); var inner=toolGlyph(t)+'<span>'+esc(t.n)+(t.note?'<small>'+esc(t.note)+'</small>':'')+'</span>';
+    return u?'<a class="tchip" href="'+esc(u)+'" target="_blank" rel="noopener noreferrer">'+inner+'</a>':'<span class="tchip">'+inner+'</span>';}).join('')+'</div>';}
+function toolsView(){
+  var me=S.people.me, mine=me.tools||[], have={}; mine.forEach(function(t){have[t.k]=1;});
+  var use={}; Object.keys(S.people).forEach(function(id){(S.people[id].tools||[]).forEach(function(t){(use[t.n]=use[t.n]||[]).push(id);});});
+  var popular=Object.keys(use).sort(function(a,b){return use[b].length-use[a].length||(a<b?-1:1);}).slice(0,8);
+  return '<div class="wrap"><main>'
+    +'<div><h1>Microsoft tools</h1><p class="muted">Add the Microsoft 365 tools you work in. They show on your profile so colleagues know where to find you and your work, and they stay here as quick links.</p></div>'
+    +'<section class="card"><h2>My tools · '+mine.length+'</h2>'
+    +(mine.length?'<div class="tgrid">'+mine.map(function(t,i){
+        var u=safeUrl(t.u);
+        if(ui.toolEdit===i) return '<form class="tool" data-f="tooledit" data-i="'+i+'"><div class="th">'+toolGlyph(t)+'<strong>'+esc(t.n)+'</strong></div>'
+          +'<label class="f" for="te-url">Link<input id="te-url" type="text" inputmode="url" autocomplete="url" value="'+esc(t.u||'')+'" placeholder="https://"></label>'
+          +'<label class="f" for="te-note">What it is for<input id="te-note" type="text" maxlength="80" value="'+esc(t.note||'')+'" placeholder="e.g. Team SharePoint site"></label>'
+          +'<div class="row"><button class="btn sm primary" type="submit">Save</button><button class="btn sm" type="button" data-a="toolcancel">Cancel</button></div></form>';
+        return '<div class="tool"><div class="th">'+toolGlyph(t)+'<div style="min-width:0"><strong>'+esc(t.n)+'</strong><div class="meta wb">'+esc(t.note||hostOf(u)||'No link yet')+'</div></div></div>'
+          +'<div class="row">'+(u?'<a class="btn sm primary" href="'+esc(u)+'" target="_blank" rel="noopener noreferrer">Open</a>':'')
+          +'<button class="btn sm" type="button" data-a="tooledit" data-v="'+i+'">Edit</button><button class="btn sm" type="button" data-a="tooldel" data-v="'+i+'">Remove</button></div></div>';
+      }).join('')+'</div>':'<span class="muted">You have not added any tools yet. Pick from the list below.</span>')
+    +'</section>'
+    +'<section class="card"><h2>Add a Microsoft tool</h2><div class="tgrid">'+TOOLS.filter(function(t){return !have[t.k];}).map(function(t){
+        return '<div class="tool"><div class="th">'+toolGlyph(t)+'<div style="min-width:0"><strong>'+esc(t.n)+'</strong><div class="meta">'+esc(t.c)+'</div></div></div><div><button class="btn sm ok" type="button" data-a="tooladd" data-v="'+t.k+'">+ Add</button></div></div>';
+      }).join('')+'</div>'+(TOOLS.every(function(t){return have[t.k];})?'<span class="muted">You have added every tool in the list.</span>':'')+'</section>'
+    +'<form class="card" data-f="toolnew" style="gap:12px"><h2>Add another tool or link</h2><span class="muted">For a specific SharePoint site, Teams channel, Power BI report or anything else you share with colleagues.</span>'
+    +'<div class="row" style="align-items:flex-start;gap:12px"><label class="f" for="tn-name" style="flex:1 1 200px">Name<input id="tn-name" type="text" required maxlength="40" placeholder="e.g. Advising Teams channel"></label>'
+    +'<label class="f" for="tn-url" style="flex:2 1 260px">Link<input id="tn-url" type="text" inputmode="url" autocomplete="url" required placeholder="https://"></label></div>'
+    +'<label class="f" for="tn-note">What it is for<input id="tn-note" type="text" maxlength="80" placeholder="Optional"></label><div><button class="btn primary" type="submit">Add tool</button></div></form>'
+    +'</main><aside>'
+    +'<section class="card"><h2>Popular across NestWork</h2><span class="meta">Select a tool to find people who use it.</span>'+popular.map(function(n){return '<div class="barrow" style="grid-template-columns:minmax(0,1fr) auto"><button class="link" type="button" data-a="topic" data-v="'+esc(n)+'" style="min-height:36px">'+esc(n)+'</button><span class="num">'+use[n].length+'</span></div>';}).join('')+'</section>'
+    +'<section class="card"><h2>Tips</h2><ol class="plain"><li>Paste the link to your team\'s SharePoint site or Teams channel, so colleagues land in the right place.</li><li>Add a short note on what each tool is for.</li><li>Tools on your profile help people find you in search.</li></ol></section>'
+    +'</aside></div>';
+}
+function photoOf(id){var x=who(id); if(x.photo==='none') return ''; if(x.photo) return x.photo; return id==='me'?PHOTO:'';}
+function initials(n){return String(n||'').split(/\s+/).filter(Boolean).map(function(w){return w.charAt(0);}).join('').slice(0,2).toUpperCase()||'?';}
+function av(id,size,anon){
+  var n=anon?'?':nm(id), ini=anon?'?':n.split(/\s+/).map(function(w){return w.charAt(0);}).join('').slice(0,2).toUpperCase();
+  var st='width:'+size+'px;height:'+size+'px;font-size:'+Math.round(size*.38)+'px';
+  if(anon) return '<span class="av" style="'+st+'" aria-hidden="true">?</span>';
+  var ph=photoOf(id);
+  if(ph) return '<button type="button" class="av" style="'+st+'" data-a="person" data-id="'+id+'" aria-label="Open profile: '+esc(n)+'"><img src="'+esc(ph)+'" alt=""></button>';
+  return '<button type="button" class="av'+(isPP(id)?' pp':'')+'" style="'+st+'" data-a="person" data-id="'+id+'" aria-label="Open profile: '+esc(n)+'">'+esc(ini)+'</button>';
+}
+function whoRow(id,ts,anon,role){
+  if(anon) return '<div class="who">'+av(id,40,true)+'<div><strong>Posted without name</strong><div class="meta">'+esc(role)+' · '+ago(ts)+'</div></div></div>';
+  return '<div class="who">'+av(id,40)+'<div><button type="button" class="name" data-a="person" data-id="'+id+'">'+esc(nm(id))+'</button>'+(isPP(id)?' <span class="chip elev">Process Champion</span>':'')
+    +'<div class="meta wb">'+esc(sub(id))+' · '+ago(ts)+'</div></div></div>';
+}
+function words(t){var stop={with:1,that:1,this:1,from:1,have:1,what:1,which:1,when:1,does:1,been:1,their:1,after:1,every:1,other:1,already:1,anyone:1,else:1,into:1,time:1,twice:1,actually:1};
+  return String(t).toLowerCase().replace(/[^a-z0-9 ]/g,' ').split(/\s+/).filter(function(w){return w.length>3&&!stop[w];});}
+function similar(title,exceptId){
+  var q=words(title); if(!q.length) return [];
+  var need=q.length<3?1:2;
+  return live().filter(function(p){return p.id!==exceptId;}).map(function(p){var w=words(p.title),n=0; q.forEach(function(x){if(w.indexOf(x)>-1) n++;}); return {p:p,n:n};})
+    .filter(function(x){return x.n>=need;}).sort(function(a,b){return b.n-a.n||meToo(b.p)-meToo(a.p);}).slice(0,3).map(function(x){return x.p;});
+}
+function chips(p){
+  var out='';
+  if(p.improved) out+='<span class="chip done">Process improved</span>';
+  else if(p.elevated) out+='<span class="chip elev">Elevated for process review</span>';
+  out+=solved(p)?'<span class="chip solved">Solution shared</span>':'<span class="chip open">Needs a solution</span>';
+  return out;
+}
+function topics(tags){return (tags&&tags.length)?'<div class="row">'+tags.map(function(t){return '<button type="button" class="topic" data-a="topic" data-v="'+esc(t)+'">#'+esc(t)+'</button>';}).join('')+'</div>':'';}
+function tagged(p){
+  var t='';
+  if(p.office) t+='<span class="chip space">'+esc(p.office)+'</span>';
+  (p.experts||[]).forEach(function(id){ if(S.people[id]) t+='<button type="button" class="topic" data-a="person" data-id="'+id+'">@'+esc(nm(id))+'</button>'; });
+  var out=t?'<span class="meta">Tagged:</span>'+t:'';
+  if(p.routedTo) out+='<span class="chip elev">Routed to '+esc(p.routedTo)+'</span>';
+  return out?'<div class="row">'+out+'</div>':'';
+}
+function routeCtl(p){
+  if(p.routedTo) return '<span class="meta">Routed to '+esc(p.routedTo)+'</span>';
+  return '<label class="sr" for="route-'+p.id+'">Office to route to</label><select id="route-'+p.id+'" class="sel">'+OFFICES.map(function(o){return '<option'+(o===p.office?' selected':'')+'>'+esc(o)+'</option>';}).join('')+'</select><button class="btn sm" type="button" data-a="route" data-id="'+p.id+'">Route to office</button>';
+}
+function dur(ms){var h=ms/3600e3; if(h<1) return 'under an hour'; if(h<20) return Math.round(h)+(Math.round(h)===1?' hour':' hours'); var d=Math.max(1,Math.round(h/24)); return d+(d===1?' day':' days');}
+function median(a){a=a.slice().sort(function(x,y){return x-y;}); return a.length?a[Math.floor((a.length-1)/2)]:null;}
+function arrow(){return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"></path></svg>';}
+function voteBox(p){var on=!!S.my.meToo[p.id];
+  return '<div class="vote"><button type="button" data-a="metoo" data-id="'+p.id+'" aria-pressed="'+on+'" aria-label="I have this too">'+arrow()+'</button><span class="num">'+meToo(p)+'</span><small>me too</small></div>';}
+function connectBtn(id,cls){ if(id==='me') return ''; var c=!!S.my.connect[id]; return '<button class="btn '+(cls||'')+'" type="button" data-a="connect" data-id="'+id+'"'+(c?' disabled':'')+'>'+(c?'Request sent':'Connect')+'</button>'; }
+function allTags(){var m={}; live().forEach(function(p){(p.tags||[]).forEach(function(t){m[t]=(m[t]||0)+1;});}); return Object.keys(m).map(function(t){return {t:t,n:m[t]};}).sort(function(a,b){return b.n-a.n||(a.t<b.t?-1:1);});}
+
+/* ---------- search ---------- */
+function toks(q){return String(q).toLowerCase().split(/\s+/).filter(Boolean);}
+function has(text,t){text=String(text).toLowerCase(); for(var i=0;i<t.length;i++) if(text.indexOf(t[i])<0) return false; return true;}
+function hl(text,t){var s=esc(text); if(!t.length) return s;
+  var re=new RegExp('('+t.map(function(x){return esc(x).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}).join('|')+')','ig'); return s.replace(re,'<mark>$1</mark>');}
+function snip(text,t){var low=text.toLowerCase(), at=-1; for(var i=0;i<t.length;i++){var k=low.indexOf(t[i]); if(k>-1&&(at<0||k<at)) at=k;}
+  var start=Math.max(0,at-60), out=text.slice(start,start+200); return (start>0?'…':'')+out+(start+200<text.length?'…':'');}
+function runSearch(q){
+  var t=toks(q), out={t:t,posts:[],replies:[],people:[],tags:[]}; if(!t.length) return out;
+  live().forEach(function(p){
+    if(has([p.title,p.doing,p.stuck,p.tried,p.space,p.office||'',(p.tags||[]).join(' ')].join(' '),t)) out.posts.push(p);
+    p.replies.forEach(function(r){ if(has(r.body,t)) out.replies.push({r:r,p:p}); });
+  });
+  out.posts.sort(function(a,b){return (has(b.title,t)-has(a.title,t))||meToo(b)-meToo(a);});
+  out.replies.sort(function(a,b){return (b.r.confirmed-a.r.confirmed)||worked(b.r)-worked(a.r);});
+  Object.keys(S.people).forEach(function(id){ if(id==='me') return; var x=S.people[id]; if(has([(x.tools||[]).map(function(t){return t.n+' '+(t.note||'');}).join(' '),x.name,x.title,x.unit,x.role,(x.skills||[]).join(' '),(x.interests||[]).join(' ')].join(' '),t)) out.people.push(id); });
+  out.tags=allTags().filter(function(x){return t.some(function(k){return x.t.indexOf(k)>-1;});});
+  return out;
+}
+function searchResults(){
+  var q=ui.q.trim(), R=runSearch(q), t=R.t;
+  if(!t.length) return '<div class="card"><h2>Search NestWork</h2><span class="muted">Type a topic, a process or a person in the search bar. Results cover challenges, solutions and people.</span><h2 style="margin-top:6px">Popular topics</h2>'+topics(allTags().slice(0,14).map(function(x){return x.t;}))+'</div>';
+  var total=R.posts.length+R.replies.length+R.people.length;
+  function sc(label,key,n){return '<button class="btn sm'+(ui.scope===key?' on':'')+'" type="button" data-a="scope" data-v="'+key+'" aria-pressed="'+(ui.scope===key)+'">'+label+' · '+n+'</button>';}
+  var out='<div class="card"><h1 class="wb">'+total+(total===1?' result':' results')+' for "'+esc(q)+'"</h1>'
+    +'<div class="row" role="group" aria-label="Result type">'+sc('All','all',total)+sc('Challenges','posts',R.posts.length)+sc('Solutions and replies','replies',R.replies.length)+sc('People','people',R.people.length)+'</div>'
+    +(R.tags.length?'<div class="row"><span class="meta">Topics:</span>'+R.tags.slice(0,8).map(function(x){return '<button type="button" class="topic" data-a="topic" data-v="'+esc(x.t)+'">#'+esc(x.t)+' · '+x.n+'</button>';}).join('')+'</div>':'')+'</div>';
+  if(!total) return out+'<div class="card"><strong>Nothing matches yet.</strong><span class="muted">Try fewer or different words, or post it as a new challenge so others can find it.</span><div><button class="btn primary" type="button" data-a="go" data-v="new">Post a challenge</button></div></div>';
+  var all=ui.scope==='all';
+  if((all||ui.scope==='posts')&&R.posts.length) out+='<section class="card"><h2>Challenges</h2>'+R.posts.slice(0,all?5:50).map(function(p){
+      return '<div class="result"><button type="button" class="title" style="font-size:18px" data-a="open" data-id="'+p.id+'">'+hl(p.title,t)+'</button>'
+        +'<span class="muted wb">'+hl(snip(p.stuck,t),t)+'</span><div class="row">'+chips(p)+'<span class="meta">'+esc(p.space)+' · '+meToo(p)+' me too</span></div></div>';}).join('')
+      +(all&&R.posts.length>5?'<button class="link" type="button" data-a="scope" data-v="posts">See all '+R.posts.length+' challenges</button>':'')+'</section>';
+  if((all||ui.scope==='replies')&&R.replies.length) out+='<section class="card"><h2>Solutions and replies</h2>'+R.replies.slice(0,all?5:50).map(function(x){
+      return '<div class="result"><div class="row">'+(x.r.confirmed?'<span class="chip done">Confirmed solution</span>':'')+'<span class="meta">'+esc(nm(x.r.by))+' · worked for '+worked(x.r)+'</span></div>'
+        +'<span class="muted wb">'+hl(snip(x.r.body,t),t)+'</span><button class="link" type="button" data-a="open" data-id="'+x.p.id+'" style="min-height:32px">In: '+esc(x.p.title)+'</button></div>';}).join('')
+      +(all&&R.replies.length>5?'<button class="link" type="button" data-a="scope" data-v="replies">See all '+R.replies.length+' replies</button>':'')+'</section>';
+  if((all||ui.scope==='people')&&R.people.length) out+='<section class="card"><h2>People</h2><div class="people">'+R.people.map(function(id){return personCard(id,t);}).join('')+'</div></section>';
+  return out;
+}
+function personCard(id,t){var x=who(id);
+  return '<div class="card" style="gap:8px"><div class="who">'+av(id,44)+'<div><button type="button" class="name" data-a="person" data-id="'+id+'">'+hl(nm(id),t||[])+'</button><div class="meta wb">'+hl(sub(id),t||[])+'</div></div></div>'
+    +((x.skills||[]).length?'<span class="meta wb">Knows: '+hl(x.skills.join(', '),t||[])+'</span>':'')+(x.custom?'<div><span class="chip open">Created by you</span></div>':'')+'<div>'+connectBtn(id,'sm')+'</div></div>';
+}
+
+/* ---------- chrome ---------- */
+function header(){
+  function nav(label,v){return '<button type="button" data-a="go" data-v="'+v+'"'+(ui.view===v?' aria-current="page"':'')+'>'+label+'</button>';}
+  var pend=S.posts.filter(function(p){return p.status==='pending';}).length;
+  return '<header class="bar"><div class="bar-in">'
+  +'<button class="brand" type="button" data-a="go" data-v="feed"><i><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#003057" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 17l5-5 4 4 7-9"></path></svg></i><span>NestWork<small>Jackets solving it together.</small></span></button>'
+  +'<span class="tag">Prototype</span>'
+  +'<label class="gsearch"><span class="sr">Search challenges, solutions, topics and people</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg><input id="q" type="search" placeholder="Search topics, challenges, solutions, people" value="'+esc(ui.q)+'"></label>'
+  +'<nav class="nav" aria-label="Main">'+nav('Home','feed')+nav('My network','network')+nav('Tools','tools')+(isPartner()?nav('Dashboard · '+pend,'dash'):'')+nav('Me','me')+'</nav>'
+  +'</div></header>'+demoBar();
+}
+function meCard(){
+  var mine=S.posts.filter(function(p){return p.by==='me';}), nSol=0; live().forEach(function(p){p.replies.forEach(function(r){if(r.by==='me'&&r.confirmed) nSol++;});});
+  return '<section class="card pcard"><div class="band"></div><div class="in">'+av('me',60)
+    +'<div><button type="button" class="name" data-a="person" data-id="me" style="font-size:18px">'+esc(nm('me'))+'</button><div class="meta wb">'+esc(sub('me'))+'</div>'+(who('me').headline?'<div class="motto" style="font-size:15px;margin-top:6px">'+esc(who('me').headline)+'</div>':'')+'</div>'
+    +'<div class="stat"><span class="meta">Connections requested</span><span class="num">'+Object.keys(S.my.connect).length+'</span></div>'
+    +'<div class="stat"><span class="meta">Challenges posted</span><span class="num">'+mine.length+'</span></div>'
+    +'<div class="stat"><span class="meta">Confirmed solutions</span><span class="num">'+nSol+'</span></div>'
+    +'<span class="meta">Prototype view</span><div class="seg" role="group" aria-label="View as"><button type="button" data-a="role" data-v="member" aria-pressed="'+(!isPartner())+'">Member</button><button type="button" data-a="role" data-v="partner" aria-pressed="'+isPartner()+'">Process Champion</button></div>'
+    +'</div></section>';
+}
+function forMe(){
+  var a=live().filter(function(p){return (p.experts||[]).indexOf('me')>-1&&!solved(p);}); if(!a.length) return '';
+  return '<section class="card"><h2>Tagged for you</h2><span class="meta">Colleagues think you can help with these.</span>'+a.map(function(p){return '<button class="link" type="button" data-a="open" data-id="'+p.id+'">'+esc(p.title)+'</button>';}).join('')+'</section>';
+}
+function mineCard(){
+  var mine=S.posts.filter(function(p){return p.by==='me';}); if(!mine.length) return '';
+  return '<section class="card"><h2>My submissions</h2>'+mine.map(function(p){
+    var s=p.status==='pending'?'<span class="chip wait">Pending approval</span>':p.status==='live'?'<span class="chip solved">Live</span>':p.status==='merged'?'<span class="chip open">Merged</span>':p.status==='returned'?'<span class="chip elev">Sent back</span>':'<span class="chip elev">Declined</span>';
+    var t=p.status==='live'?'<button class="link" type="button" data-a="open" data-id="'+p.id+'">'+esc(p.title)+'</button>':'<span class="wb" style="font-weight:600">'+esc(p.title)+'</span>';
+    var extra=p.status==='returned'&&p.note?'<span class="meta wb">Note: '+esc(p.note)+'</span>':p.status==='merged'&&post(p.mergedInto)?'<button class="link" type="button" data-a="open" data-id="'+p.mergedInto+'">See the existing thread</button>':'';
+    return '<div style="display:flex;flex-direction:column;gap:4px;align-items:flex-start">'+t+s+extra+'</div>';
+  }).join('')+'</section>';
+}
+function contributors(){
+  var m={}, tm={}; live().forEach(function(p){p.replies.forEach(function(r){(tm[r.by]=tm[r.by]||[]).push(r.ts-p.ts); if(r.confirmed) m[r.by]=(m[r.by]||0)+1;});});
+  var a=Object.keys(m).map(function(k){return {id:k,n:m[k]};}).sort(function(x,y){return y.n-x.n;}).slice(0,4);
+  if(!a.length) return '';
+  return '<section class="card"><h2>Top contributors</h2><span class="meta">Recognized for accurate, useful and timely answers.</span>'+a.map(function(c){return '<div class="who">'+av(c.id,36)+'<div style="flex:1"><button type="button" class="name" data-a="person" data-id="'+c.id+'">'+esc(nm(c.id))+'</button><div class="meta">'+c.n+' confirmed '+(c.n===1?'solution':'solutions')+' · replies in about '+dur(median(tm[c.id]))+'</div></div></div>';}).join('')+'</section>';
+}
+
+/* ---------- views ---------- */
+function postCard(p){
+  var best=p.replies.filter(function(r){return r.confirmed;})[0];
+  return '<article class="post">'+voteBox(p)+'<div class="body">'
+    +'<div class="row" style="justify-content:space-between;align-items:flex-start">'+whoRow(p.by,p.ts,p.anon,who(p.by).role)+'<span class="chip space">'+esc(p.space)+'</span></div>'
+    +'<button class="title" type="button" data-a="open" data-id="'+p.id+'">'+esc(p.title)+'</button>'
+    +'<div class="muted wb">'+esc(p.stuck)+'</div>'+topics(p.tags)+tagged(p)
+    +'<div class="row">'+chips(p)+'<span class="meta">'+p.units+(p.units===1?' unit':' units')+(best?' · worked for '+worked(best):'')+'</span></div>'
+    +'<div class="acts"><button type="button" data-a="open" data-id="'+p.id+'">'+p.replies.length+(p.replies.length===1?' reply':' replies')+'</button><button type="button" data-a="open" data-id="'+p.id+'">Share what worked</button></div>'
+    +'</div></article>';
+}
+function feedList(){
+  var list=live().filter(function(p){
+    if(ui.space!=='all'&&p.space!==ui.space) return false;
+    if(ui.sort==='open'&&solved(p)) return false;
+    if(ui.sort==='solved'&&!solved(p)) return false;
+    return true;
+  });
+  list.sort(ui.sort==='new'?function(a,b){return b.ts-a.ts;}:function(a,b){return meToo(b)-meToo(a);});
+  if(!list.length) return '<div class="card"><strong>No challenges here yet.</strong><span class="muted">Try another space or filter, or post the first one.</span></div>';
+  return list.map(postCard).join('');
+}
+function pill(label,key,val){return '<button class="btn sm'+(ui[key]===val?' on':'')+'" type="button" data-a="set" data-k="'+key+'" data-v="'+esc(val)+'" aria-pressed="'+(ui[key]===val)+'">'+esc(label)+'</button>';}
+function hero(){
+  var h=new Date().getHours(), g=h<12?'Good morning':h<18?'Good afternoon':'Good evening', first=(S.people.me.name||'').replace(/^(Dr|Prof|Mr|Ms|Mrs)\.?\s+/i,'').split(' ')[0];
+  var L=live(), nSol=0; L.forEach(function(p){p.replies.forEach(function(r){if(r.confirmed) nSol++;});});
+  return '<section class="hero"><h1>'+g+(first?', '+esc(first):'')+'.</h1><p class="lead">Find the answer. Meet the Jacket behind it.</p><p>What is slowing you down today? Someone across the Institute has probably solved it already.</p>'
+    +'<div class="stats"><span><b>'+L.length+'</b>live challenges</span><span><b>'+nSol+'</b>confirmed solutions</span><span><b>'+L.filter(function(p){return p.improved;}).length+'</b>processes improved</span></div></section>';
+}
+function spaceRow(label,val){
+  var n=val==='all'?live().length:live().filter(function(p){return p.space===val;}).length;
+  return '<button type="button" class="sp" data-a="set" data-k="space" data-v="'+esc(val)+'" aria-pressed="'+(ui.space===val)+'"><span class="hexn">'+n+'</span>'+esc(label)+'</button>';
+}
+function badge(label,path){return '<div class="badge"><i><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#EAAA00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="'+path+'"></path></svg></i>'+label+'</div>';}
+function feed(){
+  return '<div class="wrap"><div class="rail">'+meCard()+forMe()+mineCard()+'</div><main>'
+  +hero()
+  +'<section class="card"><div class="starter">'+av('me',44)+'<button type="button" class="go" data-a="go" data-v="new">Post a process challenge</button></div></section>'
+  +'<div class="row" role="group" aria-label="Sort and filter">'+pill('Most shared','sort','shared')+pill('Newest','sort','new')+pill('Needs a solution','sort','open')+pill('Solved','sort','solved')+'</div>'
+  +feedList()
+  +'</main><aside>'
+  +'<section class="card" style="gap:4px"><h2 style="margin-bottom:6px">Spaces</h2>'+spaceRow('All spaces','all')+SPACES.map(function(s){return spaceRow(s,s);}).join('')+'</section>'
+  +'<section class="card"><h2>Popular topics</h2>'+topics(allTags().slice(0,12).map(function(x){return x.t;}))+'</section>'
+  +contributors()
+  +'<section class="card"><h2>How it works</h2><ol class="plain"><li><strong>Identify</strong> a process challenge</li><li><strong>Search</strong> for the same issue elsewhere</li><li><strong>Connect</strong> with people who have hit it</li><li><strong>Solve</strong> with what already worked</li><li><strong>Measure</strong> how often it recurs</li><li><strong>Share</strong> the fix Institute-wide</li></ol></section>'
+  +'<button class="btn" type="button" data-a="reset">Reset sample data</button>'
+  +'</aside></div>';
+}
+
+function thread(){
+  var p=post(ui.id); if(!p||p.status!=='live') return '<div class="wrap"><main><div class="card"><strong>This challenge is not available.</strong><button class="link" type="button" data-a="go" data-v="feed">Back to the feed</button></div></main></div>';
+  var s=solved(p);
+  var replies=p.replies.slice().sort(function(a,b){return (b.confirmed-a.confirmed)||worked(b)-worked(a);});
+  var people={}; if(!p.anon&&p.by!=='me') people[p.by]=1; p.replies.forEach(function(r){if(r.by!=='me') people[r.by]=1;});
+  var sim=similar(p.title,p.id);
+  return '<div class="wrap"><main>'
+  +'<button class="link" type="button" data-a="go" data-v="feed">← Back to the feed</button>'
+  +'<article class="post">'+voteBox(p)+'<div class="body">'
+    +'<div class="row" style="justify-content:space-between;align-items:flex-start">'+whoRow(p.by,p.ts,p.anon,who(p.by).role)+'<span class="chip space">'+esc(p.space)+'</span></div>'
+    +'<h1 class="wb">'+esc(p.title)+'</h1>'
+    +'<div class="qa"><strong>What I am trying to do.</strong> '+esc(p.doing)+'</div>'
+    +'<div class="qa"><strong>Where it gets stuck.</strong> '+esc(p.stuck)+'</div>'
+    +(p.tried?'<div class="qa"><strong>What I have tried.</strong> '+esc(p.tried)+'</div>':'')+topics(p.tags)+tagged(p)
+    +'<div class="row">'+chips(p)+'<span class="meta">'+p.units+(p.units===1?' unit':' units')+' affected</span></div></div></article>'
+  +'<section class="card"><div class="steps" aria-label="Progress">'
+    +'<div class="hit"><i></i>Identified</div><div class="'+(s?'hit':'')+'"><i></i>Solution shared</div>'
+    +'<div class="'+(p.elevated?'hit'+(p.improved?'':' now'):'')+'"><i></i>Elevated</div><div class="'+(p.improved?'hit':'')+'"><i></i>Process improved</div></div>'
+    +(isPartner()?'<div class="row"><span class="meta">Process Champion actions:</span>'
+      +(p.elevated?'':'<button class="btn sm" type="button" data-a="elevate" data-id="'+p.id+'">Elevate for process review</button>')
+      +(p.elevated&&!p.improved?'<button class="btn sm ok" type="button" data-a="improve" data-id="'+p.id+'">Mark process improved</button>':'')
+      +(p.improved?'<span class="meta">Closed out as improved.</span>':'')+(solved(p)?'':routeCtl(p))+'</div>':'')
+  +'</section>'
+  +'<h2 style="margin-top:6px">'+p.replies.length+(p.replies.length===1?' reply':' replies')+'</h2>'
+  +(replies.length?replies.map(function(r){
+      var on=!!S.my.worked[r.id];
+      return '<article class="reply'+(r.confirmed?' best':'')+'">'
+        +'<div class="row" style="justify-content:space-between;align-items:flex-start">'+whoRow(r.by,r.ts)+(r.confirmed?'<span class="chip done">Confirmed solution</span>':'')+'</div>'
+        +'<span class="meta">Replied '+dur(r.ts-p.ts)+' after this was posted</span>'
+        +'<p>'+esc(r.body)+'</p>'
+        +'<div class="row"><button class="btn sm'+(on?' ok':'')+'" type="button" data-a="worked" data-id="'+r.id+'" aria-pressed="'+on+'">This worked for me · '+worked(r)+'</button>'
+        +connectBtn(r.by,'sm')
+        +(isPartner()?'<button class="btn sm" type="button" data-a="confirm" data-id="'+r.id+'">'+(r.confirmed?'Remove confirmation':'Confirm as solution')+'</button>':'')
+        +'</div></article>';
+    }).join(''):'<div class="card"><span class="muted">No replies yet. If you have solved this in your unit, share the steps below.</span></div>')
+  +'<form class="card" data-f="reply"><label class="f" for="reply-body">Add what worked for you<textarea id="reply-body" rows="3" required placeholder="Share the steps, template or contact that solved it in your unit"></textarea></label><div><button class="btn primary" type="submit">Post reply</button></div></form>'
+  +'</main><aside>'
+  +(p.routedTo?'<section class="card"><h2>Routed to '+esc(p.routedTo)+'</h2><span class="muted">A Process Champion sent this to the office that owns the process so it gets an answer.</span></section>':'')
+  +(p.elevated?'<section class="card" style="background:var(--gold-tint);border-color:var(--gold);color:var(--gold-ink)"><h2>'+(p.improved?'Process improved':'Elevated for process review')+'</h2><span>'+(p.improved?'The process owner changed this at the source.':'Raised by a Process Champion because it recurs across units.')+'</span></section>':'')
+  +(Object.keys(people).length?'<section class="card"><h2>People who have hit this</h2>'+Object.keys(people).map(function(id){return '<div class="who" style="justify-content:space-between"><div class="who">'+av(id,36)+'<div><button type="button" class="name" data-a="person" data-id="'+id+'">'+esc(nm(id))+'</button><div class="meta wb">'+esc(who(id).unit||who(id).role)+'</div></div></div>'+connectBtn(id,'sm')+'</div>';}).join('')+'<span class="meta">'+meToo(p)+' people marked "me too".</span></section>':'')
+  +(sim.length?'<section class="card"><h2>Similar issues</h2>'+sim.map(function(x){return '<button class="link" type="button" data-a="open" data-id="'+x.id+'">'+esc(x.title)+'</button>';}).join('')+'</section>':'')
+  +'</aside></div>';
+}
+
+function similarBox(title){
+  var sim=similar(title,null); if(!sim.length) return '';
+  return '<div class="hint"><strong>Before you post: '+sim.length+' similar '+(sim.length===1?'challenge exists':'challenges exist')+'</strong>'
+    +sim.map(function(p){return '<div class="item"><span style="flex:1 1 220px;min-width:0"><button class="link" type="button" data-a="open" data-id="'+p.id+'">'+esc(p.title)+'</button><br><span class="meta">'+esc(p.space)+' · '+meToo(p)+' me too</span></span>'+(solved(p)?'<span class="chip solved">Solution shared</span>':'<span class="chip open">Needs a solution</span>')+'</div>';}).join('')
+    +'<span class="meta">If one of these is yours, add "me too" there instead. It counts toward getting the issue elevated.</span></div>';
+}
+function newPost(){
+  return '<div class="wrap"><main>'
+  +'<button class="link" type="button" data-a="go" data-v="feed">← Back to the feed</button>'
+  +'<h1>Post a challenge</h1><p class="muted">Describe the process problem, not the person. Someone in another unit has probably hit it too.</p>'
+  +'<form class="card" data-f="new" style="gap:18px">'
+  +'<label class="f" for="np-title">Title<input id="np-title" type="text" required maxlength="160" placeholder="e.g. Expense report returned with no explanation"></label>'
+  +'<div id="similar"></div>'
+  +'<label class="f" for="np-space">Space<select id="np-space">'+SPACES.map(function(s){return '<option>'+esc(s)+'</option>';}).join('')+'</select></label>'
+  +'<label class="f" for="np-tags">Topics<input id="np-tags" type="text" placeholder="e.g. reimbursement, receipts"><span class="meta" style="font-weight:400">Separate with commas. Topics make your post easier to find in search.</span></label>'
+  +'<div class="row" style="align-items:flex-start;gap:14px"><label class="f" for="np-office" style="flex:1 1 220px">Tag an office<select id="np-office"><option value="">No office tagged</option>'+OFFICES.map(function(o){return '<option>'+esc(o)+'</option>';}).join('')+'</select></label>'
+  +'<label class="f" for="np-expert" style="flex:1 1 220px">Tag an expert<select id="np-expert"><option value="">No one tagged</option>'+Object.keys(S.people).filter(function(i){return i!=='me';}).map(function(i){return '<option value="'+i+'">'+esc(nm(i))+' ('+esc((who(i).skills||[]).slice(0,2).join(', '))+')</option>';}).join('')+'</select></label></div>'
+  +'<span class="meta">Tag the office that owns the process or a colleague who knows it, so the challenge reaches someone who can answer.</span>'
+  +'<label class="f" for="np-doing">What are you trying to do?<textarea id="np-doing" rows="2" required placeholder="The task, in one or two sentences"></textarea></label>'
+  +'<label class="f" for="np-stuck">Where does it get stuck?<textarea id="np-stuck" rows="3" required placeholder="The step, form or handoff where it stalls"></textarea></label>'
+  +'<label class="f" for="np-tried">What have you already tried?<textarea id="np-tried" rows="2" placeholder="So others do not suggest it again"></textarea></label>'
+  +'<label class="check" for="np-anon"><input id="np-anon" type="checkbox"><span><strong>Post without my name.</strong> Others see your role only. The Process Champion can still see who posted.</span></label>'
+  +'<div class="row"><button class="btn primary" type="submit">Submit for approval</button><button class="btn" type="button" data-a="go" data-v="feed">Cancel</button></div>'
+  +'</form></main><aside>'
+  +'<section class="card"><h2>House rules</h2><ol class="plain"><li>Name the process, not the person or office at fault.</li><li>Search first. "Me too" on an existing post beats a duplicate.</li><li>No student records, personnel details or other protected information.</li><li>Come back and mark what worked.</li></ol></section>'
+  +'<section class="card"><h2>What happens next</h2><span class="muted">Your post goes to a Process Champion for approval before it appears in the feed. It is then approved, merged with an existing post, or sent back with a note. You can follow it under My submissions on the home page.</span></section>'
+  +'</aside></div>';
+}
+
+function profile(){
+  var id=ui.id||'me', x=who(id), isMe=id==='me';
+  if(!S.people[id]) return '<div class="wrap"><main><div class="card"><strong>Profile not found.</strong></div></main></div>';
+  var posts=live().filter(function(p){return p.by===id&&(isMe||!p.anon);}), reps=[], nSol=0, helped=0;
+  var times=[], quick=false, canEdit=isMe||!!x.custom;
+  var editBtn='<button class="btn" type="button" data-a="edit">'+(ui.edit?'Close':'Edit profile')+'</button>';
+  live().forEach(function(p){p.replies.forEach(function(r){if(r.by===id){reps.push({r:r,p:p}); if(r.confirmed) nSol++; helped+=worked(r); times.push(r.ts-p.ts); if(r.ts-p.ts<=24.5*3600e3) quick=true;}});});
+  var head='<section class="card pcard"><div class="band" style="height:80px"></div><div class="in" style="margin-top:-40px">'+av(id,80)
+    +'<div class="row" style="justify-content:space-between;align-items:flex-start"><div><h1>'+esc(nm(id))+(x.cred?'<span style="color:var(--gold-ink)">, '+esc(x.cred)+'</span>':'')+'</h1><div class="muted wb">'+esc(sub(id))+'</div>'+(x.headline?'<div class="motto" style="margin-top:4px">'+esc(x.headline)+'</div>':'')
+    +'<div class="row" style="margin-top:6px"><span class="chip space">'+esc(x.role)+'</span>'+(isPP(id)?'<span class="chip elev">Process Champion</span>':'')+(x.custom?'<span class="chip open">Created by you</span>':'')+'</div></div>'
+    +(isMe?editBtn:x.custom?'<div class="row">'+connectBtn(id,'primary')+editBtn+'</div>':connectBtn(id,'primary'))+'</div>'
+    +((x.skills||[]).length?'<div><span class="meta">Knows about</span>'+topics(x.skills)+'</div>':(isMe?'<span class="meta">Add your title, unit and what you know about so colleagues can find you.</span>':''))
+    +((x.interests||[]).length?'<div><span class="meta">Wants to learn about</span>'+topics(x.interests)+'</div>':'')
+    +'</div></section>';
+  var edit=canEdit&&ui.edit?profileForm(id)
+    +(x.custom?'<section class="card"><h2>Delete this profile</h2>'+(ui.del
+      ?'<span class="muted">This removes '+esc(nm(id))+' from NestWork, including any expert tags on challenges. It cannot be undone.</span><div class="row"><button class="btn primary" type="button" data-a="delprof" data-id="'+id+'">Yes, delete profile</button><button class="btn" type="button" data-a="delno">Keep it</button></div>'
+      :'<span class="muted">Remove a profile you created when it is no longer needed.</span><div><button class="btn" type="button" data-a="delask">Delete profile</button></div>')+'</section>':''):'';
+  var bl='';
+  if(isPP(id)) bl+=badge('Process Champion','M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z');
+  if(nSol>=1) bl+=badge('Confirmed Solver','M5 12l5 5 9-10');
+  if(helped>=25) bl+=badge('Helped 25+','M8 11a3 3 0 100-6 3 3 0 000 6zm8 0a3 3 0 100-6 3 3 0 000 6zM2 20c0-3 3-5 6-5s6 2 6 5m2-5c3 0 6 2 6 5');
+  if(quick) bl+=badge('Quick Responder','M12 7v5l3 2M12 3a9 9 0 100 18 9 9 0 000-18z');
+  if(posts.length>=1) bl+=badge('Challenge Raiser','M6 21V4h11l-2 4 2 4H6');
+  if(isMe&&Object.keys(S.my.connect).length>=1) bl+=badge('Connector','M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1');
+  var badges='<section class="card"><h2>Recognition</h2>'+(bl?'<div class="badges">'+bl+'</div>':'<span class="muted">Badges appear here as '+(isMe?'you post':'they post')+', solve and connect.</span>')+'</section>';
+  var about=(x.about||x.motto)?'<section class="card"><h2>About me</h2>'+(x.about?'<p class="muted wb" style="white-space:pre-wrap">'+esc(x.about)+'</p>':'')+(x.motto?'<p class="motto">'+esc(x.motto)+'</p>':'')+'</section>':'';
+  var proj=(x.projects||[]).length?'<section class="card"><h2>Current projects and growth</h2><ul class="plain">'+x.projects.map(function(s){return '<li>'+esc(s)+'</li>';}).join('')+'</ul></section>':'';
+  var favs=(x.favs||[]).length?'<section class="card"><h2>A few of my favorite things</h2>'+x.favs.map(function(o){return '<div><div class="meta" style="font-weight:700;color:var(--gold-ink)">'+esc(o[0])+'</div><div class="wb">'+esc(o[1])+'</div></div>';}).join('')+'</section>':'';
+  var quote=x.quote?'<figure class="quote"><blockquote>'+esc(x.quote[0])+'</blockquote><figcaption>'+esc(x.quote[1])+'</figcaption></figure>':'';
+  var tools=(x.tools||[]).length||isMe?'<section class="card"><div class="row" style="justify-content:space-between"><h2>Tools I use</h2>'+(isMe?'<button class="link" type="button" data-a="go" data-v="tools">Manage tools</button>':'')+'</div>'+((x.tools||[]).length?toolChips(x):'<span class="muted">Add the Microsoft tools you work in so colleagues know where to find you.</span>')+'</section>':'';
+  var np=prefs(id), nline=isMe?'':'<section class="card" style="gap:6px"><h2>Email notifications</h2><span class="muted" style="font-size:15px">'+(np.on&&np.email?esc(nm(id).split(' ')[0]==='Dr.'?nm(id):nm(id).split(' ')[0])+' gets email when you connect, reply or tag them ('+freqLabel(np.freq).toLowerCase()+').':'Email notifications are off for this profile.')+'</span></section>';
+  return '<div class="wrap"><main>'+head+edit+about+tools+proj+badges
+    +'<section class="tiles">'+'<div class="tile"><b>Challenges posted</b><span class="num">'+posts.length+'</span></div><div class="tile"><b>Confirmed solutions</b><span class="num">'+nSol+'</span></div><div class="tile"><b>People helped</b><span class="num">'+helped+'</span></div><div class="tile"><b>Typical response</b><span class="num" style="font-size:22px">'+(times.length?dur(median(times)):'n/a')+'</span></div></section>'
+    +'<section class="card"><h2>Solutions and replies</h2>'+(reps.length?reps.map(function(o){return '<div class="result"><div class="row">'+(o.r.confirmed?'<span class="chip done">Confirmed solution</span>':'')+'<span class="meta">worked for '+worked(o.r)+' · '+ago(o.r.ts)+'</span></div><span class="muted wb">'+esc(snip(o.r.body,[]))+'</span><button class="link" type="button" data-a="open" data-id="'+o.p.id+'" style="min-height:32px">In: '+esc(o.p.title)+'</button></div>';}).join(''):'<span class="muted">No replies yet.</span>')+'</section>'
+    +'<section class="card"><h2>Challenges posted</h2>'+(posts.length?posts.map(function(p){return '<div class="result"><button class="link" type="button" data-a="open" data-id="'+p.id+'" style="min-height:32px">'+esc(p.title)+'</button><div class="row">'+chips(p)+'<span class="meta">'+meToo(p)+' me too</span></div></div>';}).join(''):'<span class="muted">No live challenges yet.</span>')+'</section>'
+    +'</main><aside>'+(isMe?notifyCard():nline)+favs+quote+(isMe?mineCard():'')+contributors()+'</aside></div>';
+}
+function photoBox(ph,name){
+  return '<span class="av" style="width:72px;height:72px;font-size:27px">'+(ph?'<img src="'+esc(ph)+'" alt="Profile photo preview">':esc(initials(name)))+'</span>'
+    +'<div class="col" style="gap:4px;align-items:flex-start"><button class="btn sm" type="button" data-a="pickphoto">'+(ph?'Change photo':'Add a photo')+'</button>'
+    +(ph?'<button class="link" type="button" data-a="nophoto" style="min-height:32px">Remove photo</button>':'')
+    +'<span class="meta">Any image works. It is cropped to a square.</span></div>';
+}
+function refreshPhotoBox(){var b=document.getElementById('pf-photo-box'), n=document.getElementById('pf-name'); if(b) b.innerHTML=photoBox(ui.photo,n?n.value:'');}
+function readPhoto(file,cb){
+  var fr=new FileReader();
+  fr.onload=function(){var img=new Image();
+    img.onload=function(){try{var s=240,c=document.createElement('canvas'); c.width=c.height=s; var k=Math.max(s/img.width,s/img.height), w=img.width*k, h=img.height*k;
+      c.getContext('2d').drawImage(img,(s-w)/2,(s-h)/2,w,h); cb(c.toDataURL('image/jpeg',.82));}catch(e){cb(null);}};
+    img.onerror=function(){cb(null);}; img.src=fr.result;};
+  fr.onerror=function(){cb(null);}; fr.readAsDataURL(file);
+}
+function profileForm(id){
+  var isNew=!id, isMe=id==='me', x=isNew?{name:'',role:'Staff',title:'',unit:'',about:'',headline:'',skills:[],interests:[]}:who(id);
+  var ph=ui.photo!==undefined?ui.photo:(isNew?'':photoOf(id));
+  var you=isMe?['I am','About me','What I know about','What I want to learn about']:['Role','About','Knows about','Wants to learn about'];
+  return '<form class="card" data-f="profile" data-id="'+(id||'')+'" style="gap:14px"><h2>'+(isNew?'New profile':'Edit profile')+'</h2>'
+    +'<input id="pf-photo" type="file" accept="image/*" hidden><div class="row" id="pf-photo-box" style="gap:14px">'+photoBox(ph,x.name)+'</div>'
+    +'<label class="f" for="pf-name">Name<input id="pf-name" type="text" required maxlength="60" value="'+esc(x.name)+'" placeholder="e.g. Jordan Smith"></label>'
+    +'<label class="f" for="pf-role">'+you[0]+'<select id="pf-role">'+['Staff','Faculty','Student'].map(function(r){return '<option'+(x.role===r?' selected':'')+'>'+r+'</option>';}).join('')+'</select></label>'
+    +'<label class="f" for="pf-title">Title<input id="pf-title" type="text" maxlength="80" value="'+esc(x.title)+'" placeholder="e.g. Program Coordinator"></label>'
+    +'<label class="f" for="pf-unit">School or department<input id="pf-unit" type="text" maxlength="80" value="'+esc(x.unit)+'" placeholder="e.g. College of Sciences"></label>'
+    +'<label class="f" for="pf-headline">Headline<input id="pf-headline" type="text" maxlength="100" value="'+esc(x.headline||'')+'" placeholder="A short line that sums them up"></label>'
+    +'<label class="f" for="pf-about">'+you[1]+'<textarea id="pf-about" rows="5">'+esc(x.about||'')+'</textarea></label>'
+    +'<label class="f" for="pf-skills">'+you[2]+'<input id="pf-skills" type="text" value="'+esc((x.skills||[]).join(', '))+'" placeholder="e.g. onboarding, travel, purchasing"><span class="meta" style="font-weight:400">Separate with commas. These make the profile show up in search and expert tagging.</span></label>'
+    +'<label class="f" for="pf-interests">'+you[3]+'<input id="pf-interests" type="text" value="'+esc((x.interests||[]).join(', '))+'" placeholder="e.g. leadership, data dashboards"></label>'
+    +(isMe?'':'<label class="check" for="pf-pp"><input id="pf-pp" type="checkbox"'+(x.partner?' checked':'')+'><span><strong>Process Champion.</strong> Shows the Process Champion badge on this profile.</span></label>')
+    +'<div class="row"><button class="btn primary" type="submit">'+(isNew?'Create profile':'Save profile')+'</button>'
+    +(isNew?'<button class="btn" type="button" data-a="go" data-v="network">Cancel</button>':'<button class="btn" type="button" data-a="edit">Cancel</button>')+'</div></form>';
+}
+function network(){
+  var ids=Object.keys(S.people).filter(function(i){return i!=='me';});
+  var mine=ids.filter(function(i){return S.my.connect[i];}), rest=ids.filter(function(i){return !S.my.connect[i];});
+  return '<div class="wrap"><main><h1>My network</h1>'
+    +'<section class="card"><h2>Connection requests sent · '+mine.length+'</h2>'+(mine.length?'<div class="people">'+mine.map(function(i){return personCard(i);}).join('')+'</div>':'<span class="muted">You have not connected with anyone yet. Connect from a thread, a profile or the list below.</span>')+'</section>'
+    +'<section class="card"><h2>People across the Institute</h2><span class="meta">Search by name, unit or topic in the bar above to narrow this down.</span><div class="people">'+rest.map(function(i){return personCard(i);}).join('')+'</div></section>'
+    +'</main><aside>'+contributors()+'</aside></div>';
+}
+
+function unresolved(L){
+  var a=L.filter(function(p){return !solved(p);}).sort(function(x,y){return x.ts-y.ts;});
+  return '<section class="col" style="gap:12px"><div class="row" style="justify-content:space-between"><h2 style="font-size:20px">Unresolved challenges</h2><span class="meta">Longest waiting first. Route each to the office that owns it.</span></div>'
+    +(a.length?'<div class="tablebox"><table><thead><tr><th>Challenge</th><th>Space</th><th>Waiting</th><th class="r">Me too</th><th>Route</th></tr></thead><tbody>'
+      +a.map(function(p){return '<tr><td><button class="link" type="button" data-a="open" data-id="'+p.id+'" style="min-height:0">'+esc(p.title)+'</button></td><td>'+esc(p.space)+'</td><td>'+dur(Date.now()-p.ts)+'</td><td class="r num">'+meToo(p)+'</td><td><div class="row">'+routeCtl(p)+'</div></td></tr>';}).join('')+'</tbody></table></div>'
+      :'<div class="card"><strong>Every live challenge has a confirmed solution.</strong></div>')+'</section>';
+}
+function pain(L){
+  var tm={}; L.forEach(function(p){(p.tags||[]).forEach(function(t){tm[t]=tm[t]||{n:0,m:0}; tm[t].n++; tm[t].m+=meToo(p);});});
+  var tops=Object.keys(tm).map(function(t){return {t:t,n:tm[t].n,m:tm[t].m};}).sort(function(a,b){return b.m-a.m;}).slice(0,6), maxT=tops.length?tops[0].m:1;
+  var sp=SPACES.map(function(s){var all=L.filter(function(p){return p.space===s;}); return {s:s,all:all.length,open:all.filter(function(p){return !solved(p);}).length};}).filter(function(x){return x.all;}).sort(function(a,b){return b.open-a.open||b.all-a.all;});
+  var maxS=1; sp.forEach(function(x){if(x.all>maxS) maxS=x.all;});
+  return '<section class="tiles" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr))">'
+    +'<div class="card"><h2>Most common pain points</h2><span class="meta">Topics ranked by how many people said "me too".</span>'
+    +tops.map(function(x){return '<div class="barrow"><button type="button" class="link" data-a="topic" data-v="'+esc(x.t)+'" style="min-height:0">#'+esc(x.t)+'</button><span class="bar-t"><i style="width:'+Math.max(4,Math.round(100*x.m/maxT))+'%"></i></span><span class="num">'+x.m+'</span></div>';}).join('')+'</div>'
+    +'<div class="card"><h2>Where answers are missing</h2><span class="meta">Challenges without a confirmed solution, by space.</span>'
+    +sp.map(function(x){return '<div class="barrow"><span style="font-weight:600">'+esc(x.s)+'</span><span class="bar-t"><i style="width:'+Math.round(100*x.open/maxS)+'%"></i></span><span class="num">'+x.open+' of '+x.all+'</span></div>';}).join('')+'</div>'
+    +'</section>';
+}
+function dash(){
+  if(!isPartner()) return '<div class="wrap"><main><div class="card"><strong>The dashboard is for Process Champions.</strong><span class="muted">Switch to Process Champion on the home page to see it.</span></div></main></div>';
+  var L=live(), pend=S.posts.filter(function(p){return p.status==='pending';}).sort(function(a,b){return a.ts-b.ts;});
+  var nSol=0; L.forEach(function(p){p.replies.forEach(function(r){if(r.confirmed) nSol++;});});
+  function tile(label,n,lead){return '<div class="tile'+(lead?' lead':'')+'"><b>'+label+'</b><span class="num">'+n+'</span></div>';}
+  var rec=L.slice().sort(function(a,b){return meToo(b)-meToo(a);}).slice(0,8);
+  return '<div class="wrap" style="flex-direction:column;flex-wrap:nowrap;align-items:stretch">'
+  +'<div><h1>Moderator dashboard</h1><p class="muted">Approve new posts, watch what recurs, and elevate it.</p></div>'
+  +'<section class="tiles" aria-label="Pilot measures">'+tile('Pending approval',pend.length,true)+tile('Live challenges',L.length)
+    +tile('Needs a solution',L.filter(function(p){return !solved(p);}).length)+tile('Recurring (3+ units)',L.filter(function(p){return p.units>=3;}).length)+tile('Confirmed solutions',nSol)
+    +tile('Elevated',L.filter(function(p){return p.elevated;}).length)+tile('Process improved',L.filter(function(p){return p.improved;}).length)+'</section>'
+  +'<div style="display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start"><main>'
+  +'<div class="row" style="justify-content:space-between"><h2 style="font-size:20px">Pending post approvals</h2><span class="meta">'+pend.length+' waiting · oldest first</span></div>'
+  +(pend.length?pend.map(function(p){
+      var sim=similar(p.title,p.id)[0];
+      return '<article class="card"><div class="row" style="justify-content:space-between;align-items:flex-start">'+whoRow(p.by,p.ts)+'<span class="chip space">'+esc(p.space)+'</span></div>'
+        +(p.anon?'<span class="meta">Asked to post without their name.</span>':'')
+        +'<div class="wb" style="font-size:19px;font-weight:700;line-height:1.3">'+esc(p.title)+'</div>'
+        +'<div class="qa"><strong>Trying to:</strong> '+esc(p.doing)+'</div><div class="qa"><strong>Stuck at:</strong> '+esc(p.stuck)+'</div>'+topics(p.tags)+tagged(p)
+        +(sim?'<div class="flag warn"><strong>Possible duplicate.</strong> Similar to "'+esc(sim.title)+'" ('+meToo(sim)+' me too).</div>':'<div class="flag ok"><strong>No close duplicates found.</strong> Still check it against the house rules.</div>')
+        +(ui.noteFor===p.id
+          ?'<form class="note row" data-f="note" data-id="'+p.id+'"><label class="sr" for="note-in">Note to the author</label><input id="note-in" type="text" required placeholder="What should the author change?" style="flex:1 1 240px"><button class="btn primary" type="submit">Send back</button><button class="btn" type="button" data-a="note" data-id="">Cancel</button></form>'
+          :'<div class="row">'+(sim?'<button class="btn primary" type="button" data-a="merge" data-id="'+p.id+'" data-v="'+sim.id+'">Merge with existing</button>':'')
+            +'<button class="btn '+(sim?'ok':'primary')+'" type="button" data-a="approve" data-id="'+p.id+'">'+(sim?'Approve as new':'Approve')+'</button>'
+            +'<button class="btn" type="button" data-a="note" data-id="'+p.id+'">Send back with note</button><button class="btn" type="button" data-a="decline" data-id="'+p.id+'">Decline</button></div>')
+        +'</article>';
+    }).join(''):'<div class="card"><strong>Queue is clear.</strong><span class="muted">New submissions appear here before they reach the feed.</span></div>')
+  +'</main><aside><section class="card"><h2>Approval checklist</h2><ol class="plain"><li>About a process, not a person</li><li>No protected or personal information</li><li>Not already posted (merge if it is)</li><li>In the right space, with useful topics</li></ol></section></aside></div>'
+  +unresolved(L)+pain(L)
+  +'<section class="col" style="gap:12px"><div class="row" style="justify-content:space-between"><h2 style="font-size:20px">Recurring issues</h2><span class="meta">Ranked by "me too"</span></div>'
+  +'<div class="tablebox"><table><thead><tr><th>Issue</th><th>Space</th><th class="r">Me too</th><th class="r">Units</th><th>Status</th><th><span class="sr">Action</span></th></tr></thead><tbody>'
+  +rec.map(function(p){return '<tr><td><button class="link" type="button" data-a="open" data-id="'+p.id+'" style="min-height:0">'+esc(p.title)+'</button></td><td>'+esc(p.space)+'</td><td class="r num">'+meToo(p)+'</td><td class="r num">'+p.units+'</td><td><div class="row">'+chips(p)+'</div></td><td>'
+      +(p.improved?'':p.elevated?'<button class="btn sm ok" type="button" data-a="improve" data-id="'+p.id+'">Mark improved</button>':'<button class="btn sm" type="button" data-a="elevate" data-id="'+p.id+'">Elevate</button>')+'</td></tr>';}).join('')
+  +'</tbody></table></div></section></div>';
+}
+
+function body(){
+  var v=ui.view;
+  return v==='thread'?thread():v==='new'?newPost():v==='dash'?dash():v==='search'?'<div class="wrap"><main id="results">'+searchResults()+'</main><aside><section class="card"><h2>Popular topics</h2>'+topics(allTags().slice(0,12).map(function(x){return x.t;}))+'</section></aside></div>'
+    :v==='person'?profile():v==='me'?(ui.id='me',profile()):v==='network'?network():v==='tools'?toolsView():feed();
+}
+function render(){ hdr.innerHTML=header(); app.innerHTML=body(); }
+function toast(msg){toastEl.textContent=msg; toastEl.hidden=false; clearTimeout(toastT); toastT=setTimeout(function(){toastEl.hidden=true;},3200);}
+function go(view,id){
+  if(view==='person'&&id==='me') view='me';
+  if(view!=='search') ui.q='';
+  ui.view=view; ui.id=id||null; ui.noteFor=null; ui.edit=false; ui.photo=undefined; ui.del=false; ui.toolEdit=null; render(); try{window.scrollTo(0,0);}catch(e){}
+  try{var h=view==='thread'?'t-'+id:view==='person'?'u-'+id:view; if(location.hash!=='#'+h) history.replaceState(null,'','#'+h);}catch(e){}
+}
+function findReply(id){for(var i=0;i<S.posts.length;i++){var rs=S.posts[i].replies; for(var j=0;j<rs.length;j++) if(rs[j].id===id) return rs[j];} return null;}
+function list(v){return String(v).split(',').map(function(s){return s.trim().toLowerCase().replace(/^#/,'');}).filter(Boolean).slice(0,6);}
+
+document.addEventListener('click',function(e){
+  var b=e.target.closest('[data-a]'); if(!b) return;
+  var a=b.getAttribute('data-a'), id=b.getAttribute('data-id'), v=b.getAttribute('data-v'), p=id?post(id):null, r;
+  if(a==='go') return go(v);
+  if(a==='open') return go('thread',id);
+  if(a==='person') return go('person',id);
+  if(a==='topic'){ui.q=v; ui.scope='all'; return go('search');}
+  if(a==='scope'){ui.scope=v; return render();}
+  if(a==='set'){ui[b.getAttribute('data-k')]=v; return render();}
+  if(a==='as') return switchTo(v);
+  if(a==='tooladd'){var td=toolDef(v); if(td){var me=S.people.me; me.tools=me.tools||[]; me.tools.push(T(v)); save(); render(); toast(td.n+' added to your profile');} return;}
+  if(a==='tooldel'){var me2=S.people.me, ti=+v; if(me2.tools&&me2.tools[ti]){var gone2=me2.tools.splice(ti,1)[0]; ui.toolEdit=null; save(); render(); toast(gone2.n+' removed');} return;}
+  if(a==='tooledit'){ui.toolEdit=+v; render(); var tu=document.getElementById('te-url'); if(tu) tu.focus(); return;}
+  if(a==='toolcancel'){ui.toolEdit=null; return render();}
+  if(a==='edit'){ui.edit=!ui.edit; ui.photo=undefined; ui.del=false; return render();}
+  if(a==='pickphoto'){var fi=document.getElementById('pf-photo'); if(fi) fi.click(); return;}
+  if(a==='nophoto'){ui.photo=''; return refreshPhotoBox();}
+  if(a==='delask'){ui.del=true; return render();}
+  if(a==='delno'){ui.del=false; return render();}
+  if(a==='delprof'){
+    if(S.people[id]&&S.people[id].custom){var gone=nm(id); delete S.people[id]; delete S.my.connect[id];
+      S.posts.forEach(function(q){q.experts=(q.experts||[]).filter(function(e){return e!==id;});});
+      save(); go('network'); toast('Deleted the profile for '+gone);}
+    return;
+  }
+  if(a==='role'){S.role=v; save(); if(v!=='partner'&&ui.view==='dash') return go('feed'); render(); return;}
+  if(a==='metoo'){if(S.my.meToo[id]) delete S.my.meToo[id]; else S.my.meToo[id]=1; save(); return render();}
+  if(a==='worked'){if(S.my.worked[id]) delete S.my.worked[id]; else S.my.worked[id]=1; save(); return render();}
+  if(a==='connect'){S.my.connect[id]=1; var em=notify(id,'connect',nm('me')+' wants to connect with you on NestWork'); save(); render(); return toast('Connection request sent to '+nm(id)+'.'+em);}
+  if(a==='confirm'){r=findReply(id); if(r){r.confirmed=!r.confirmed; var em2=r.confirmed?notify(r.by,'replies','Your reply was confirmed as the solution'):''; save(); render(); toast(r.confirmed?'Marked as the confirmed solution.'+em2:'Confirmation removed');} return;}
+  if(a==='route'&&p){var sel=document.getElementById('route-'+id); if(sel&&sel.value){p.routedTo=sel.value; save(); render(); toast('Routed to '+p.routedTo);} return;}
+  if(a==='elevate'&&p){p.elevated=true; save(); render(); return toast('Elevated for process review');}
+  if(a==='improve'&&p){p.improved=true; save(); render(); return toast('Marked as process improved');}
+  if(a==='approve'&&p){p.status='live'; var em3=notify(p.by,'status','Your challenge "'+p.title+'" was approved');
+    (p.experts||[]).forEach(function(e){em3+=notify(e,'tagged',(p.anon?'A colleague':nm(p.by))+' tagged you on "'+p.title+'"');});
+    save(); render(); return toast('Approved. It is now in the feed.'+em3);}
+  if(a==='decline'&&p){p.status='declined'; var em4=notify(p.by,'status','Your challenge "'+p.title+'" was declined'); save(); render(); return toast('Declined.'+em4);}
+  if(a==='merge'&&p){var t=post(v); if(t){t.meToo+=1; p.status='merged'; p.mergedInto=t.id; notify(p.by,'status','Your challenge was merged with "'+t.title+'"'); save(); render(); toast('Merged. One "me too" added to the existing thread.');} return;}
+  if(a==='note'){ui.noteFor=id||null; render(); var n=document.getElementById('note-in'); if(n) n.focus(); return;}
+  if(a==='reset'){S=seed(); save(); ui.space='all'; ui.sort='shared'; ui.q=''; render(); return toast('Sample data restored');}
+});
+document.addEventListener('submit',function(e){
+  var f=e.target.closest('[data-f]'); if(!f) return; e.preventDefault();
+  var k=f.getAttribute('data-f');
+  function val(i){var el=document.getElementById(i); return el?el.value.trim():'';}
+  if(k==='reply'){
+    var p=post(ui.id), text=val('reply-body'); if(!p||!text) return;
+    p.replies.push({id:'u'+(S.seq++),by:'me',body:text,worked:0,confirmed:false,ts:Date.now()});
+    var em5=p.by!=='me'?notify(p.by,'replies',nm('me')+' replied to "'+p.title+'"'):'';
+    save(); render(); return toast('Reply posted.'+em5);
+  }
+  if(k==='new'){
+    var title=val('np-title'), doing=val('np-doing'), stuck=val('np-stuck'); if(!title||!doing||!stuck) return;
+    S.posts.push({id:'n'+(S.seq++),space:val('np-space'),title:title,by:'me',ts:Date.now(),meToo:1,units:1,tags:list(val('np-tags')),office:val('np-office'),experts:(val('np-expert')?[val('np-expert')]:[]),routedTo:'',doing:doing,stuck:stuck,tried:val('np-tried'),replies:[],status:'pending',elevated:false,improved:false,anon:document.getElementById('np-anon').checked,note:''});
+    save(); go('feed'); return toast('Submitted for approval');
+  }
+  if(k==='notify'){
+    var ne=val('nt-email'); if(ne&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(ne)) return toast('Enter a valid email address');
+    var o={on:document.getElementById('nt-on').checked,email:ne,freq:val('nt-freq')||'instant'};
+    NOTIF.forEach(function(n){var c=document.getElementById('nt-'+n[0]); o[n[0]]=!!(c&&c.checked);});
+    S.people.me.notify=o; save(); render(); return toast(o.on&&o.email?'Notification settings saved':'Email notifications turned off');
+  }
+  if(k==='toolnew'){
+    var tn=val('tn-name'), tu2=safeUrl(val('tn-url')); if(!tn) return; if(!tu2) return toast('Enter a link that starts with https://');
+    var me3=S.people.me; me3.tools=me3.tools||[]; me3.tools.push({k:'custom',n:tn,u:tu2,note:val('tn-note')}); save(); render(); return toast(tn+' added to your profile');
+  }
+  if(k==='tooledit'){
+    var me4=S.people.me, i4=+f.getAttribute('data-i'), t4=me4.tools&&me4.tools[i4]; if(!t4) return;
+    var u4=val('te-url'); if(u4&&!safeUrl(u4)) return toast('Enter a link that starts with https://');
+    t4.u=safeUrl(u4); t4.note=val('te-note'); ui.toolEdit=null; save(); render(); return toast(t4.n+' updated');
+  }
+  if(k==='note'){
+    var q=post(f.getAttribute('data-id')), note=val('note-in'); if(!q||!note) return;
+    q.status='returned'; q.note=note; ui.noteFor=null; var em6=notify(q.by,'status','Your challenge "'+q.title+'" was sent back with a note'); save(); render(); return toast('Sent back to the author.'+em6);
+  }
+  if(k==='profile'){
+    var pid=f.getAttribute('data-id'), isNew=!pid, nmv=val('pf-name'); if(!nmv) return;
+    var m=isNew?{custom:true}:S.people[pid]; if(!m) return;
+    m.name=nmv; m.role=val('pf-role')||'Staff'; m.title=val('pf-title'); m.unit=val('pf-unit'); m.skills=list(val('pf-skills')); m.interests=list(val('pf-interests')); m.about=val('pf-about'); m.headline=val('pf-headline');
+    var pp=document.getElementById('pf-pp'); if(pp) m.partner=pp.checked;
+    if(ui.photo!==undefined) m.photo=ui.photo||'none';
+    if(isNew){ pid='c'+(S.seq++); while(S.people[pid]) pid='c'+(S.seq++); S.people[pid]=m; }
+    var ok=save();
+    if(isNew){ go('person',pid); }
+    else { ui.edit=false; ui.photo=undefined; render(); }
+    return toast(!ok?'Saved for this visit only. This browser could not store it.':isNew?'Profile created for '+nmv:'Profile saved');
+  }
+});
+document.addEventListener('input',function(e){
+  if(e.target.id==='q'){
+    ui.q=e.target.value;
+    if(ui.view!=='search'){ui.view='search'; ui.scope='all'; app.innerHTML=body(); return;}
+    var r=document.getElementById('results'); if(r) r.innerHTML=searchResults();
+  }
+  if(e.target.id==='np-title'){var s=document.getElementById('similar'); if(s) s.innerHTML=similarBox(e.target.value);}
+  if(e.target.id==='pf-name'){var shown=ui.photo!==undefined?ui.photo:(ui.view==='create'?'':photoOf(ui.id||'me')); if(!shown){var b=document.getElementById('pf-photo-box'); if(b) b.innerHTML=photoBox('',e.target.value);}}
+});
+document.addEventListener('change',function(e){
+  if(e.target.id!=='pf-photo') return;
+  var file=e.target.files&&e.target.files[0]; if(!file) return;
+  if(!/^image\//.test(file.type)){ toast('Choose an image file'); return; }
+  readPhoto(file,function(url){ if(!url){ toast('That image could not be read'); return; } ui.photo=url; refreshPhotoBox(); });
+  e.target.value='';
+});
+function fromHash(){
+  var h=(location.hash||'').replace('#','');
+  if(h.indexOf('t-')===0&&post(h.slice(2))){ui.view='thread'; ui.id=h.slice(2);}
+  else if(h.indexOf('u-')===0&&S.people[h.slice(2)]){ui.view='person'; ui.id=h.slice(2);}
+  else if(['new','dash','feed','network','me','search','tools'].indexOf(h)>-1){ui.view=h; ui.id=null;}
+  if(ui.view==='dash'&&!isPartner()) ui.view='feed';
+}
+window.addEventListener('hashchange',function(){fromHash(); render();});
+fromHash(); render();
+})();
+</script>
+
+</body></html>
