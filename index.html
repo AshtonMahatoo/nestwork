@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Welcome to NestWork</title>
+<title>Welcome to HiveMind</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Roboto+Slab:wght@600;700&display=swap">
 <style>
-/* Layout: a navy honeycomb band holds the pitch and the scan card side by side; below it, three hub jobs, then the demo personas. Same identity as the NestWork app. */
+/* Layout: a navy honeycomb band holds the pitch and the scan card side by side; below it, three hub jobs, then the demo personas. Same identity as the HiveMind app. */
 :root{
   --bg:#F1F2EE; --surface:#FFFFFF; --line:#D6DBD4; --ink:#0B1F33; --ink2:#2C3E50; --meta:#54585A;
   --navy:#003057; --gold:#B3A369; --buzz:#EAAA00; --on-navy:#FFFFFF; --on-navy-2:#DCE4EC; --gold-ink:#6B5D24; --gold-tint:#F3EEDC;
@@ -87,7 +87,7 @@ footer .in{padding-block:8px 36px;font-size:14px;color:var(--meta);border-top:1p
   <div class="in">
     <div class="brand">
       <i><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#003057" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 17l5-5 4 4 7-9"></path></svg></i>
-      <span><b>NestWork</b><small>Jackets solving it together.</small></span>
+      <span><b>HiveMind</b><small>Jackets solving it together.</small></span>
       <span class="tag">Prototype</span>
     </div>
     <div class="hero">
@@ -98,11 +98,11 @@ footer .in{padding-block:8px 36px;font-size:14px;color:var(--meta);border-top:1p
         <div class="who" aria-label="Who it is for"><span>Students</span><span>Faculty</span><span>Staff</span><span>Every department</span></div>
       </div>
       <div class="scan">
-        <h2>Scan to open NestWork</h2>
-        <div id="qr" class="qr-box" role="img" aria-label="QR code that opens NestWork"></div>
-        <a class="open" href="app.html">Open NestWork</a>
+        <h2>Scan to open HiveMind</h2>
+        <div id="qr" class="qr-box" role="img" aria-label="QR code that opens HiveMind"></div>
+        <a class="open" href="app.html">Open HiveMind</a>
         <div class="copy">
-          <label for="link" class="sr" style="position:absolute;left:-9999px">NestWork link</label>
+          <label for="link" class="sr" style="position:absolute;left:-9999px">HiveMind link</label>
           <input id="link" type="text" readonly value="">
           <button id="copy" type="button">Copy</button>
         </div>
@@ -140,7 +140,7 @@ footer .in{padding-block:8px 36px;font-size:14px;color:var(--meta);border-top:1p
 
     <section class="sec" aria-labelledby="demo-h">
       <h2 id="demo-h">Try the demo from three seats</h2>
-      <p>Use the <strong>Demo as</strong> bar at the top of NestWork to switch who is signed in.</p>
+      <p>Use the <strong>Demo as</strong> bar at the top of HiveMind to switch who is signed in.</p>
       <div class="personas">
         <div class="persona"><b>Student</b><strong>George P. Burdell</strong><span>Find help and resources across campus.</span></div>
         <div class="persona"><b>Professor</b><strong>Dr. Charles Xavier</strong><span>Tenured faculty sharing expertise, courses and tools.</span></div>
@@ -155,7 +155,7 @@ footer .in{padding-block:8px 36px;font-size:14px;color:var(--meta);border-top:1p
   </div>
 </main>
 
-<footer><div class="in">NestWork is a Team Fire concept prototype with sample data. It is not an official Georgia Tech website.</div></footer>
+<footer><div class="in">HiveMind is a Team Fire concept prototype with sample data. It is not an official Georgia Tech website.</div></footer>
 
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <script>
@@ -165,7 +165,7 @@ footer .in{padding-block:8px 36px;font-size:14px;color:var(--meta);border-top:1p
   try{var q=qrcode(0,'M'); q.addData(appUrl); q.make();
     var svg=q.createSvgTag({cellSize:4,margin:4,scalable:true}).replace('fill="black"','fill="#003057"');
     document.getElementById('qr').innerHTML=svg;
-  }catch(e){document.getElementById('qr').outerHTML='<p style="font-size:14px">Use the button or link below to open NestWork.</p>';}
+  }catch(e){document.getElementById('qr').outerHTML='<p style="font-size:14px">Use the button or link below to open HiveMind.</p>';}
   var b=document.getElementById('copy'), i=document.getElementById('link');
   b.addEventListener('click',function(){
     function done(){b.textContent='Copied';setTimeout(function(){b.textContent='Copy';},1800);}
