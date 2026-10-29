@@ -1,5 +1,5 @@
 <!doctype html><html lang="en"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<title>HiveMind</title>
+<title>NestWork</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&family=Roboto+Slab:wght@600;700&display=swap">
 <style>
 /* Layout: navy app bar with global search; profile rail left, feed centre, spaces and topics right. Votes sit left of each post. */
@@ -219,7 +219,7 @@ a.tchip:hover{border-color:var(--gold)}
 
 <div id="hdr"></div>
 <div id="app"></div>
-<p class="foot">HiveMind: Jackets solving it together. A Team Fire concept prototype with sample data, not an official Georgia Tech website.</p>
+<p class="foot">NestWork: Jackets solving it together. A Team Fire concept prototype with sample data, not an official Georgia Tech website.</p>
 <div id="toast" class="toast" role="status" hidden></div>
 
 <script>
@@ -349,7 +349,7 @@ function switchTo(id){
   S.as=id; save(); go('me'); toast('Now viewing as '+nm('me'));
 }
 function demoBar(){
-  return '<div class="demo"><div class="demo-in" role="group" aria-label="Demo: view HiveMind as"><span class="demo-l">Demo as</span>'
+  return '<div class="demo"><div class="demo-in" role="group" aria-label="Demo: view NestWork as"><span class="demo-l">Demo as</span>'
     +PERSONAS.map(function(p){var on=asId()===p.id, n=on?nm('me'):(S.people[p.id]?nm(p.id):''); if(!n) return '';
       return '<button type="button" data-a="as" data-v="'+p.id+'" aria-pressed="'+on+'"><b>'+esc(p.label)+'</b><span>'+esc(n)+'</span></button>';}).join('')
     +'</div></div>';
@@ -369,7 +369,7 @@ function notifyCard(){
   var pr=prefs('me'), inbox=(S.mail||[]).filter(function(m){return m.to===asId();}).slice(0,6);
   return '<section class="card"><h2>Email notifications</h2>'
     +'<form class="col" data-f="notify" style="gap:12px">'
-    +'<label class="check" for="nt-on"><input id="nt-on" type="checkbox"'+(pr.on?' checked':'')+'><span><strong>Email me about activity</strong> on HiveMind.</span></label>'
+    +'<label class="check" for="nt-on"><input id="nt-on" type="checkbox"'+(pr.on?' checked':'')+'><span><strong>Email me about activity</strong> on NestWork.</span></label>'
     +'<label class="f" for="nt-email">Email address<input id="nt-email" type="email" value="'+esc(pr.email)+'" placeholder="you@gatech.edu"></label>'
     +'<label class="f" for="nt-freq">How often<select id="nt-freq">'+['instant','daily','weekly'].map(function(f){return '<option value="'+f+'"'+(pr.freq===f?' selected':'')+'>'+freqLabel(f)+'</option>';}).join('')+'</select></label>'
     +'<div class="col" style="gap:6px"><span class="meta" style="font-weight:700">Send me an email when</span>'
@@ -411,7 +411,7 @@ function toolsView(){
     +'<label class="f" for="tn-url" style="flex:2 1 260px">Link<input id="tn-url" type="text" inputmode="url" autocomplete="url" required placeholder="https://"></label></div>'
     +'<label class="f" for="tn-note">What it is for<input id="tn-note" type="text" maxlength="80" placeholder="Optional"></label><div><button class="btn primary" type="submit">Add tool</button></div></form>'
     +'</main><aside>'
-    +'<section class="card"><h2>Popular across HiveMind</h2><span class="meta">Select a tool to find people who use it.</span>'+popular.map(function(n){return '<div class="barrow" style="grid-template-columns:minmax(0,1fr) auto"><button class="link" type="button" data-a="topic" data-v="'+esc(n)+'" style="min-height:36px">'+esc(n)+'</button><span class="num">'+use[n].length+'</span></div>';}).join('')+'</section>'
+    +'<section class="card"><h2>Popular across NestWork</h2><span class="meta">Select a tool to find people who use it.</span>'+popular.map(function(n){return '<div class="barrow" style="grid-template-columns:minmax(0,1fr) auto"><button class="link" type="button" data-a="topic" data-v="'+esc(n)+'" style="min-height:36px">'+esc(n)+'</button><span class="num">'+use[n].length+'</span></div>';}).join('')+'</section>'
     +'<section class="card"><h2>Tips</h2><ol class="plain"><li>Paste the link to your team\'s SharePoint site or Teams channel, so colleagues land in the right place.</li><li>Add a short note on what each tool is for.</li><li>Tools on your profile help people find you in search.</li></ol></section>'
     +'</aside></div>';
 }
@@ -487,7 +487,7 @@ function runSearch(q){
 }
 function searchResults(){
   var q=ui.q.trim(), R=runSearch(q), t=R.t;
-  if(!t.length) return '<div class="card"><h2>Search HiveMind</h2><span class="muted">Type a topic, a process or a person in the search bar. Results cover challenges, solutions and people.</span><h2 style="margin-top:6px">Popular topics</h2>'+topics(allTags().slice(0,14).map(function(x){return x.t;}))+'</div>';
+  if(!t.length) return '<div class="card"><h2>Search NestWork</h2><span class="muted">Type a topic, a process or a person in the search bar. Results cover challenges, solutions and people.</span><h2 style="margin-top:6px">Popular topics</h2>'+topics(allTags().slice(0,14).map(function(x){return x.t;}))+'</div>';
   var total=R.posts.length+R.replies.length+R.people.length;
   function sc(label,key,n){return '<button class="btn sm'+(ui.scope===key?' on':'')+'" type="button" data-a="scope" data-v="'+key+'" aria-pressed="'+(ui.scope===key)+'">'+label+' · '+n+'</button>';}
   var out='<div class="card"><h1 class="wb">'+total+(total===1?' result':' results')+' for "'+esc(q)+'"</h1>'
@@ -516,10 +516,10 @@ function header(){
   function nav(label,v){return '<button type="button" data-a="go" data-v="'+v+'"'+(ui.view===v?' aria-current="page"':'')+'>'+label+'</button>';}
   var pend=S.posts.filter(function(p){return p.status==='pending';}).length;
   return '<header class="bar"><div class="bar-in">'
-  +'<button class="brand" type="button" data-a="go" data-v="feed"><i><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#003057" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 17l5-5 4 4 7-9"></path></svg></i><span>HiveMind<small>Jackets solving it together.</small></span></button>'
+  +'<button class="brand" type="button" data-a="go" data-v="feed"><i><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#003057" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 17l5-5 4 4 7-9"></path></svg></i><span>NestWork<small>Jackets solving it together.</small></span></button>'
   +'<span class="tag">Prototype</span>'
   +'<label class="gsearch"><span class="sr">Search challenges, solutions, topics and people</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg><input id="q" type="search" placeholder="Search topics, challenges, solutions, people" value="'+esc(ui.q)+'"></label>'
-  +'<nav class="nav" aria-label="Main">'+nav('Home','feed')+nav('My network','network')+nav('Tools','tools')+(isPartner()?nav('Dashboard · '+pend,'dash'):'')+nav('Me','me')+'</nav>'
+  +'<nav class="nav" aria-label="Main">'+nav('Home','feed')+nav('My network','network')+(isPartner()?nav('Dashboard · '+pend,'dash'):'')+nav('Me','me')+'</nav>'
   +'</div></header>'+demoBar();
 }
 function meCard(){
@@ -690,7 +690,7 @@ function profile(){
     +'</div></section>';
   var edit=canEdit&&ui.edit?profileForm(id)
     +(x.custom?'<section class="card"><h2>Delete this profile</h2>'+(ui.del
-      ?'<span class="muted">This removes '+esc(nm(id))+' from HiveMind, including any expert tags on challenges. It cannot be undone.</span><div class="row"><button class="btn primary" type="button" data-a="delprof" data-id="'+id+'">Yes, delete profile</button><button class="btn" type="button" data-a="delno">Keep it</button></div>'
+      ?'<span class="muted">This removes '+esc(nm(id))+' from NestWork, including any expert tags on challenges. It cannot be undone.</span><div class="row"><button class="btn primary" type="button" data-a="delprof" data-id="'+id+'">Yes, delete profile</button><button class="btn" type="button" data-a="delno">Keep it</button></div>'
       :'<span class="muted">Remove a profile you created when it is no longer needed.</span><div><button class="btn" type="button" data-a="delask">Delete profile</button></div>')+'</section>':''):'';
   var bl='';
   if(isPP(id)) bl+=badge('Process Champion','M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z');
@@ -704,7 +704,7 @@ function profile(){
   var proj=(x.projects||[]).length?'<section class="card"><h2>Current projects and growth</h2><ul class="plain">'+x.projects.map(function(s){return '<li>'+esc(s)+'</li>';}).join('')+'</ul></section>':'';
   var favs=(x.favs||[]).length?'<section class="card"><h2>A few of my favorite things</h2>'+x.favs.map(function(o){return '<div><div class="meta" style="font-weight:700;color:var(--gold-ink)">'+esc(o[0])+'</div><div class="wb">'+esc(o[1])+'</div></div>';}).join('')+'</section>':'';
   var quote=x.quote?'<figure class="quote"><blockquote>'+esc(x.quote[0])+'</blockquote><figcaption>'+esc(x.quote[1])+'</figcaption></figure>':'';
-  var tools=(x.tools||[]).length||isMe?'<section class="card"><div class="row" style="justify-content:space-between"><h2>Tools I use</h2>'+(isMe?'<button class="link" type="button" data-a="go" data-v="tools">Manage tools</button>':'')+'</div>'+((x.tools||[]).length?toolChips(x):'<span class="muted">Add the Microsoft tools you work in so colleagues know where to find you.</span>')+'</section>':'';
+  var tools=(x.tools||[]).length||isMe?'<section class="card"><div class="row" style="justify-content:space-between"><h2>Tools I use</h2>'+''+'</div>'+((x.tools||[]).length?toolChips(x):'<span class="muted">Add the Microsoft tools you work in so colleagues know where to find you.</span>')+'</section>':'';
   var np=prefs(id), nline=isMe?'':'<section class="card" style="gap:6px"><h2>Email notifications</h2><span class="muted" style="font-size:15px">'+(np.on&&np.email?esc(nm(id).split(' ')[0]==='Dr.'?nm(id):nm(id).split(' ')[0])+' gets email when you connect, reply or tag them ('+freqLabel(np.freq).toLowerCase()+').':'Email notifications are off for this profile.')+'</span></section>';
   return '<div class="wrap"><main>'+head+edit+about+tools+proj+badges
     +'<section class="tiles">'+'<div class="tile"><b>Challenges posted</b><span class="num">'+posts.length+'</span></div><div class="tile"><b>Confirmed solutions</b><span class="num">'+nSol+'</span></div><div class="tile"><b>People helped</b><span class="num">'+helped+'</span></div><div class="tile"><b>Typical response</b><span class="num" style="font-size:22px">'+(times.length?dur(median(times)):'n/a')+'</span></div></section>'
@@ -853,7 +853,7 @@ document.addEventListener('click',function(e){
   if(a==='role'){S.role=v; save(); if(v!=='partner'&&ui.view==='dash') return go('feed'); render(); return;}
   if(a==='metoo'){if(S.my.meToo[id]) delete S.my.meToo[id]; else S.my.meToo[id]=1; save(); return render();}
   if(a==='worked'){if(S.my.worked[id]) delete S.my.worked[id]; else S.my.worked[id]=1; save(); return render();}
-  if(a==='connect'){S.my.connect[id]=1; var em=notify(id,'connect',nm('me')+' wants to connect with you on HiveMind'); save(); render(); return toast('Connection request sent to '+nm(id)+'.'+em);}
+  if(a==='connect'){S.my.connect[id]=1; var em=notify(id,'connect',nm('me')+' wants to connect with you on NestWork'); save(); render(); return toast('Connection request sent to '+nm(id)+'.'+em);}
   if(a==='confirm'){r=findReply(id); if(r){r.confirmed=!r.confirmed; var em2=r.confirmed?notify(r.by,'replies','Your reply was confirmed as the solution'):''; save(); render(); toast(r.confirmed?'Marked as the confirmed solution.'+em2:'Confirmation removed');} return;}
   if(a==='route'&&p){var sel=document.getElementById('route-'+id); if(sel&&sel.value){p.routedTo=sel.value; save(); render(); toast('Routed to '+p.routedTo);} return;}
   if(a==='elevate'&&p){p.elevated=true; save(); render(); return toast('Elevated for process review');}
