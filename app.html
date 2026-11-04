@@ -1,5 +1,5 @@
 <!doctype html><html lang="en"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<title>NestWork</title>
+<title>HiveMind</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&family=Roboto+Slab:wght@600;700&display=swap">
 <style>
 /* Layout: navy app bar with global search; profile rail left, feed centre, spaces and topics right. Votes sit left of each post. */
@@ -197,7 +197,7 @@ h1,h2,.title,.brand,.num{font-family:var(--display)}
 a.btn{display:inline-flex;align-items:center;text-decoration:none;color:inherit}
 a.btn.primary{color:var(--btn-ink)}
 
-/* School themes: Georgia Tech (default, above) and a generic "Your University" look in NestWork's own colors */
+/* School themes: Georgia Tech (default, above) and a generic "Your University" look in HiveMind's own colors */
 :root[data-school="demo"]{
   --bg:#F4F7F6; --line:#D9E3E0; --ink:#13293D; --ink2:#2E4256; --navy:#13293D; --gold:#2F7D6D; --bar:#FFFFFF; --bar-ink:#13293D; --bar-field:#EAF1EF;
   --link:#13293D; --btn:#2F7D6D; --btn-ink:#FFFFFF; --sel:#13293D; --sel-ink:#FFFFFF; --buzz:#3E9C89; --tint:#E8EFEE; --gold-ink:#256B5D; --gold-tint:#E3F1ED;
@@ -232,7 +232,7 @@ a.btn.primary{color:var(--btn-ink)}
 
 <div id="hdr"></div>
 <div id="app"></div>
-<p class="foot" id="foot">Powered by NestWork · Georgia Tech pilot. A Team Fire concept prototype with sample data. Not an official Georgia Tech website.</p>
+<p class="foot" id="foot">Powered by HiveMind · Georgia Tech pilot. A Team Fire concept prototype with sample data. Not an official Georgia Tech website.</p>
 <div id="toast" class="toast" role="status" hidden></div>
 
 <script>
@@ -328,8 +328,8 @@ function who(id){var x=S.people[id]||{name:'Someone',role:'',title:'',unit:'',sk
 function nm(id){return id==='me'?(S.people.me.name||'You'):who(id).name;}
 function isPP(id){return id==='me'?isPartner():!!who(id).partner;}
 function sub(id){var x=who(id), a=[]; if(x.title) a.push(x.title); if(x.unit) a.push(x.unit); if(!a.length) a.push(x.role); return a.join(' · ');}
-var SCHOOLS={gt:{name:'Georgia Tech',label:'Georgia Tech pilot',tag:'Jackets solving it together.',lead:'Find the answer. Meet the Jacket behind it.',inst:'the Institute',foot:'Powered by NestWork \u00b7 Georgia Tech pilot \u00b7 Jackets solving it together. A Team Fire concept prototype with sample data. Not an official Georgia Tech website.'},
-  demo:{name:'Your University',label:'Your University',tag:'Where your campus works together.',lead:'Find the answer. Meet the person behind it.',inst:'campus',foot:'Powered by NestWork \u00b7 Where your campus works together. A concept prototype with sample data.'}};
+var SCHOOLS={gt:{name:'Georgia Tech',label:'Georgia Tech pilot',tag:'Jackets solving it together.',lead:'Find the answer. Meet the Jacket behind it.',inst:'the Institute',foot:'Powered by HiveMind \u00b7 Georgia Tech pilot \u00b7 Jackets solving it together. A Team Fire concept prototype with sample data. Not an official Georgia Tech website.'},
+  demo:{name:'Your University',label:'Your University',tag:'Where your campus works together.',lead:'Find the answer. Meet the person behind it.',inst:'campus',foot:'Powered by HiveMind \u00b7 Where your campus works together. A concept prototype with sample data.'}};
 function schoolLogo(){
   if((S.school||'gt')==='gt') return '<span class="slogo"><img src="'+GTLOGO+'" alt="Georgia Tech"></span>';
   return '<span class="slogo gen"><svg width="26" height="30" viewBox="0 0 24 28" aria-hidden="true"><path d="M12 1l10 4v8c0 7-4.5 11.5-10 14C6.5 24.5 2 20 2 13V5z" style="fill:#13293D"></path><path d="M7 13l3.5 3.5L17 10" style="stroke:#3E9C89;fill:none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg><span>Your University</span></span>';
@@ -347,7 +347,7 @@ function switchTo(id){
   S.as=id; save(); go('me'); toast('Now viewing as '+nm('me'));
 }
 function demoBar(){
-  return '<div class="demo"><div class="demo-in" role="group" aria-label="Demo: view NestWork as"><span class="demo-l">Demo as</span>'
+  return '<div class="demo"><div class="demo-in" role="group" aria-label="Demo: view HiveMind as"><span class="demo-l">Demo as</span>'
     +PERSONAS.map(function(p){var on=asId()===p.id, n=on?nm('me'):(S.people[p.id]?nm(p.id):''); if(!n) return '';
       return '<button type="button" data-a="as" data-v="'+p.id+'" aria-pressed="'+on+'"><b>'+esc(p.label)+'</b><span>'+esc(n)+'</span></button>';}).join('')
     +'<span class="demo-sep" aria-hidden="true"></span><span class="demo-l">School</span>'
@@ -369,7 +369,7 @@ function notifyCard(){
   var pr=prefs('me'), inbox=(S.mail||[]).filter(function(m){return m.to===asId();}).slice(0,6);
   return '<section class="card"><h2>Email notifications</h2>'
     +'<form class="col" data-f="notify" style="gap:12px">'
-    +'<label class="check" for="nt-on"><input id="nt-on" type="checkbox"'+(pr.on?' checked':'')+'><span><strong>Email me about activity</strong> on NestWork.</span></label>'
+    +'<label class="check" for="nt-on"><input id="nt-on" type="checkbox"'+(pr.on?' checked':'')+'><span><strong>Email me about activity</strong> on HiveMind.</span></label>'
     +'<label class="f" for="nt-email">Email address<input id="nt-email" type="email" value="'+esc(pr.email)+'" placeholder="you@gatech.edu"></label>'
     +'<label class="f" for="nt-freq">How often<select id="nt-freq">'+['instant','daily','weekly'].map(function(f){return '<option value="'+f+'"'+(pr.freq===f?' selected':'')+'>'+freqLabel(f)+'</option>';}).join('')+'</select></label>'
     +'<div class="col" style="gap:6px"><span class="meta" style="font-weight:700">Send me an email when</span>'
@@ -451,7 +451,7 @@ function runSearch(q){
 }
 function searchResults(){
   var q=ui.q.trim(), R=runSearch(q), t=R.t;
-  if(!t.length) return '<div class="card"><h2>Search NestWork</h2><span class="muted">Type a topic, a process or a person in the search bar. Results cover challenges, solutions and people.</span><h2 style="margin-top:6px">Popular topics</h2>'+topics(allTags().slice(0,14).map(function(x){return x.t;}))+'</div>';
+  if(!t.length) return '<div class="card"><h2>Search HiveMind</h2><span class="muted">Type a topic, a process or a person in the search bar. Results cover challenges, solutions and people.</span><h2 style="margin-top:6px">Popular topics</h2>'+topics(allTags().slice(0,14).map(function(x){return x.t;}))+'</div>';
   var total=R.posts.length+R.replies.length+R.people.length;
   function sc(label,key,n){return '<button class="btn sm'+(ui.scope===key?' on':'')+'" type="button" data-a="scope" data-v="'+key+'" aria-pressed="'+(ui.scope===key)+'">'+label+' · '+n+'</button>';}
   var out='<div class="card"><h1 class="wb">'+total+(total===1?' result':' results')+' for "'+esc(q)+'"</h1>'
@@ -480,7 +480,7 @@ function header(){
   function nav(label,v){return '<button type="button" data-a="go" data-v="'+v+'"'+(ui.view===v?' aria-current="page"':'')+'>'+label+'</button>';}
   var pend=S.posts.filter(function(p){return p.status==='pending';}).length;
   return '<header class="bar"><div class="bar-in">'
-  +'<button class="brand" type="button" data-a="go" data-v="feed" aria-label="'+esc(school().name)+' home">'+schoolLogo()+'<span class="powered"><i aria-hidden="true"></i>Powered by <b>NestWork</b></span></button>'
+  +'<button class="brand" type="button" data-a="go" data-v="feed" aria-label="'+esc(school().name)+' home">'+schoolLogo()+'<span class="powered"><i aria-hidden="true"></i>Powered by <b>HiveMind</b></span></button>'
   +'<span class="tag">Prototype</span>'
   +'<label class="gsearch"><span class="sr">Search challenges, solutions, topics and people</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="color:var(--bar-ink)"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg><input id="q" type="search" placeholder="Search topics, challenges, solutions, people" value="'+esc(ui.q)+'"></label>'
   +'<nav class="nav" aria-label="Main">'+nav('Home','feed')+nav('My network','network')+(isPartner()?nav('Dashboard · '+pend,'dash'):'')+nav('Me','me')+'</nav>'
@@ -654,7 +654,7 @@ function profile(){
     +'</div></section>';
   var edit=canEdit&&ui.edit?profileForm(id)
     +(x.custom?'<section class="card"><h2>Delete this profile</h2>'+(ui.del
-      ?'<span class="muted">This removes '+esc(nm(id))+' from NestWork, including any expert tags on challenges. It cannot be undone.</span><div class="row"><button class="btn primary" type="button" data-a="delprof" data-id="'+id+'">Yes, delete profile</button><button class="btn" type="button" data-a="delno">Keep it</button></div>'
+      ?'<span class="muted">This removes '+esc(nm(id))+' from HiveMind, including any expert tags on challenges. It cannot be undone.</span><div class="row"><button class="btn primary" type="button" data-a="delprof" data-id="'+id+'">Yes, delete profile</button><button class="btn" type="button" data-a="delno">Keep it</button></div>'
       :'<span class="muted">Remove a profile you created when it is no longer needed.</span><div><button class="btn" type="button" data-a="delask">Delete profile</button></div>')+'</section>':''):'';
   var bl='';
   if(isPP(id)) bl+=badge('Process Champion','M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z');
@@ -798,7 +798,7 @@ document.addEventListener('click',function(e){
   if(a==='scope'){ui.scope=v; return render();}
   if(a==='set'){ui[b.getAttribute('data-k')]=v; return render();}
   if(a==='as') return switchTo(v);
-  if(a==='school'){ if(SCHOOLS[v]){ S.school=v; save(); render(); toast('Showing NestWork for '+SCHOOLS[v].name); } return; }
+  if(a==='school'){ if(SCHOOLS[v]){ S.school=v; save(); render(); toast('Showing HiveMind for '+SCHOOLS[v].name); } return; }
   if(a==='edit'){ui.edit=!ui.edit; ui.photo=undefined; ui.del=false; return render();}
   if(a==='pickphoto'){var fi=document.getElementById('pf-photo'); if(fi) fi.click(); return;}
   if(a==='nophoto'){ui.photo=''; return refreshPhotoBox();}
@@ -813,7 +813,7 @@ document.addEventListener('click',function(e){
   if(a==='role'){S.role=v; save(); if(v!=='partner'&&ui.view==='dash') return go('feed'); render(); return;}
   if(a==='metoo'){if(S.my.meToo[id]) delete S.my.meToo[id]; else S.my.meToo[id]=1; save(); return render();}
   if(a==='worked'){if(S.my.worked[id]) delete S.my.worked[id]; else S.my.worked[id]=1; save(); return render();}
-  if(a==='connect'){S.my.connect[id]=1; var em=notify(id,'connect',nm('me')+' wants to connect with you on NestWork'); save(); render(); return toast('Connection request sent to '+nm(id)+'.'+em);}
+  if(a==='connect'){S.my.connect[id]=1; var em=notify(id,'connect',nm('me')+' wants to connect with you on HiveMind'); save(); render(); return toast('Connection request sent to '+nm(id)+'.'+em);}
   if(a==='confirm'){r=findReply(id); if(r){r.confirmed=!r.confirmed; var em2=r.confirmed?notify(r.by,'replies','Your reply was confirmed as the solution'):''; save(); render(); toast(r.confirmed?'Marked as the confirmed solution.'+em2:'Confirmation removed');} return;}
   if(a==='route'&&p){var sel=document.getElementById('route-'+id); if(sel&&sel.value){p.routedTo=sel.value; save(); render(); toast('Routed to '+p.routedTo);} return;}
   if(a==='elevate'&&p){p.elevated=true; save(); render(); return toast('Elevated for process review');}
